@@ -238,6 +238,11 @@ input[type=date].inp{width:auto}
     <a class="btn sm ghost" href="#import" style="text-decoration:none">去上传资料</a>
   </div>
 
+  <div id="yearBanner" class="banner" hidden>
+    <span id="yearMsg"></span>
+    <button class="btn sm primary" data-act="new-year" id="newYearBtn"></button>
+  </div>
+
   <div class="hero" id="board"></div>
 
   <section id="lines">
@@ -333,15 +338,15 @@ let toastT;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
 
 /* ---------- state ---------- */
-function blank(){
-  const t=new Date(),e=new Date(t);e.setFullYear(e.getFullYear()+1);
-  return {v:1,title:'这一年，全力以赴',subtitle:'',start:ymd(t),end:ymd(e),target:300,
+function blank(y){
+  y=y||new Date().getFullYear();
+  return {v:2,title:`${y}，全力以赴`,subtitle:'',year:y,start:`${y}-01-01`,end:`${y}-12-31`,created:todayS(),target:300,history:{},
     boards:Object.fromEntries(BOARDS.map(b=>[b.id,{goal:'',cur:0,tgt:0,unit:'',krs:[0,1,2].map(()=>({t:'',done:false,at:null}))}])),
     checkins:[],reviews:{},sample:false};
 }
 function sample(){
-  const S=blank(),t=new Date(),st=addDays(t,-40),e=new Date(st);e.setFullYear(e.getFullYear()+1);
-  Object.assign(S,{start:ymd(st),end:ymd(e),title:'这一年，把自己练成狠角色',subtitle:'工作翻倍 · 读书破万 · 身体在线 · 认真去爱',sample:true});
+  const S=blank(),t=new Date();
+  Object.assign(S,{created:ymd(addDays(t,-40)),title:`${S.year}，把自己练成狠角色`,subtitle:'工作翻倍 · 读书破万 · 身体在线 · 认真去爱',sample:true});
   const g={
     work:['年度营收贡献 50 万',12,50,'万',['Q4 独立负责 1 个完整项目','拿下 3 个长期客户','年底前完成晋升答辩'],[true,false,false]],
     study:['一年读完 24 本书',5,24,'本',['每月读 2 本并写书评','考下 1 张专业证书','学完一门系统课程'],[true,true,false]],
@@ -352,26 +357,34 @@ function sample(){
   const txt={work:['整理客户需求清单','完成方案初稿','复盘本周项目进度','和主管 1on1','跟进两个意向客户'],study:['读《纳瓦尔宝典》40 页','写完第一篇书评','证书课程第 3 讲','刷 20 道题','读完《原则》第 2 部分'],fit:['晨跑 5km','力量训练 45 分钟','间歇跑 6×400m','拉伸 + 泡沫轴放松','长距离慢跑 12km'],love:['一起做晚饭','周末去看展','认真聊了未来一年的计划','送了一束花','视频聊到很晚']};
   let seed=11;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
   for(let i=39;i>=0;i--){ if(rnd()<.22) continue; const n=rnd()<.35?2:1;
-    for(let j=0;j<n;j++){const b=BOARDS[Math.floor(rnd()*4)].id;const arr=txt[b];S.checkins.push({id:uid(),date:ymd(addDays(t,-i)),board:b,text:arr[Math.floor(rnd()*arr.length)],star:false});}}
+    for(let j=0;j<n;j++){if(addDays(t,-i).getFullYear()!==S.year)break;const b=BOARDS[Math.floor(rnd()*4)].id;const arr=txt[b];S.checkins.push({id:uid(),date:ymd(addDays(t,-i)),board:b,text:arr[Math.floor(rnd()*arr.length)],star:false});}}
   const lr=S.checkins.filter(c=>c.board==='fit').pop(); if(lr){lr.text='第一次跑进 25 分钟 5km';lr.star=true;}
   return S;
 }
 function load(){try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);if(s&&s.boards)return fix(s);}}catch(e){}return sample()}
-function fix(s){const b=blank();s=Object.assign(b,s);BOARDS.forEach(x=>{s.boards[x.id]=Object.assign(blank().boards[x.id],s.boards[x.id]||{});const k=s.boards[x.id].krs;while(k.length<3)k.push({t:'',done:false,at:null});k.length=3;});s.checkins=(s.checkins||[]).filter(c=>c&&c.date&&BM[c.board]);s.reviews=s.reviews||{};return s}
+function fix(s){const b=blank(+s.year||new Date().getFullYear());if(!s.year&&s.start&&!s.created)s.created=s.start;s=Object.assign(b,s);s.year=+s.year;s.start=`${s.year}-01-01`;s.end=`${s.year}-12-31`;s.history=s.history||{};BOARDS.forEach(x=>{s.boards[x.id]=Object.assign(blank().boards[x.id],s.boards[x.id]||{});const k=s.boards[x.id].krs;while(k.length<3)k.push({t:'',done:false,at:null});k.length=3;});s.checkins=(s.checkins||[]).filter(c=>c&&c.date&&BM[c.board]);s.reviews=s.reviews||{};return s}
 let S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
 /* ---------- derived ---------- */
 const bpct=id=>Math.round(S.boards[id].krs.filter(k=>k.done).length/3*100);
-const sorted=()=>[...S.checkins].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+const inYear=c=>c.date.startsWith(S.year+'-');
+const yearCk=()=>S.checkins.filter(inYear);
+const endEx=()=>new Date(S.year+1,0,1);
+const sorted=(arr=S.checkins)=>[...arr].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
 function streak(){const set=new Set(S.checkins.map(c=>c.date));let d=new Date(),n=0;if(!set.has(ymd(d)))d=addDays(d,-1);while(set.has(ymd(d))){n++;d=addDays(d,-1)}return n}
 function milestones(){
-  const out=[],sc=sorted(),marks=MARKS.filter(n=>n<=S.target);if(!marks.includes(S.target))marks.push(S.target);
-  marks.forEach(n=>{if(sc.length>=n){const c=sc[n-1];out.push({date:c.date,kind:'count',big:n>=100||n===S.target,title:n===S.target?`打卡 ${n} 次，年度目标达成`:`第 ${n} 次打卡`,text:c.text,board:c.board})}});
-  BOARDS.forEach(b=>S.boards[b.id].krs.forEach(k=>{if(k.done&&k.t)out.push({date:k.at||S.start,kind:'kr',big:true,title:`${b.name} · 关键结果达成`,text:k.t,board:b.id})}));
+  const out=[],marks=MARKS.filter(n=>n<=S.target);if(!marks.includes(S.target))marks.push(S.target);
+  const years=[...new Set(S.checkins.map(c=>+c.date.slice(0,4)))];
+  years.forEach(Y=>{const sy=sorted(S.checkins.filter(c=>c.date.startsWith(Y+'-')));
+    marks.forEach(n=>{if(sy.length>=n){const c=sy[n-1];out.push({date:c.date,kind:'count',big:n>=100||n===S.target,title:n===S.target?`${Y} 年打卡 ${n} 次，年度目标达成`:`${Y} 年第 ${n} 次打卡`,text:c.text,board:c.board})}})});
+  const sc=sorted(yearCk());
+  BOARDS.forEach(b=>S.boards[b.id].krs.forEach(k=>{if(k.done&&k.t)out.push({date:k.at||todayS(),kind:'kr',big:true,title:`${b.name} · 关键结果达成`,text:k.t,board:b.id})}));
+  Object.values(S.history||{}).forEach(h=>BOARDS.forEach(b=>(h.boards?.[b.id]?.krs||[]).forEach(k=>{if(k.done&&k.t)out.push({date:k.at||`${h.year}-12-31`,kind:'kr',big:true,title:`${b.name} · 关键结果达成`,text:k.t,board:b.id})})));
   BOARDS.forEach(b=>{if(bpct(b.id)===100)out.push({date:S.boards[b.id].krs.map(k=>k.at||'').sort().pop()||todayS(),kind:'board',big:true,title:`${b.name}板块全部达成`,text:S.boards[b.id].goal,board:b.id})});
   S.checkins.filter(c=>c.star).forEach(c=>out.push({date:c.date,kind:'star',big:false,title:'高光时刻',text:c.text,board:c.board}));
-  out.push({date:S.start,kind:'start',big:true,title:'一年主线启动',text:S.title,board:null});
+  out.push({date:S.created>S.start?S.created:S.start,kind:'start',big:true,title:`${S.year} 年主线启动`,text:S.title,board:null});
+  Object.values(S.history||{}).forEach(h=>out.push({date:`${h.year}-12-31`,kind:'start',big:true,title:`${h.year} 年收官`,text:h.title,board:null}));
   const rank={start:0,count:1,kr:2,board:3,star:4};
   out.sort((a,b)=>a.date===b.date?rank[b.kind]-rank[a.kind]:(a.date<b.date?1:-1));
   const next=marks.find(n=>n>sc.length);
@@ -380,10 +393,10 @@ function milestones(){
 
 /* ---------- render: hero ---------- */
 function renderHero(){
-  const st=parseD(S.start),en=parseD(S.end),now=new Date(),total=Math.max(1,diff(st,en));
+  const st=parseD(S.start),en=endEx(),now=new Date(),total=diff(st,en);
   const elapsed=Math.min(1,Math.max(0,(now-st)/(en-st)));
-  const n=S.checkins.length,cp=Math.min(100,n/S.target*100);
-  const byDay={};S.checkins.forEach(c=>{(byDay[c.date]=byDay[c.date]||{})[c.board]=(byDay[c.date]?.[c.board]||0)+1});
+  const n=yearCk().length,cp=Math.min(100,n/S.target*100);
+  const byDay={};yearCk().forEach(c=>{(byDay[c.date]=byDay[c.date]||{})[c.board]=(byDay[c.date]?.[c.board]||0)+1});
   let cells='';const off=(st.getDay()+6)%7;for(let i=0;i<off;i++)cells+='<i class="pad"></i>';
   const td=todayS();
   for(let i=0;i<total;i++){const d=ymd(addDays(st,i)),m=byDay[d];let cls='',sty='';
@@ -397,7 +410,7 @@ function renderHero(){
   <div class="hero-in">
     <div class="hero-top">
       <div style="min-width:0;flex:1">
-        <div class="eyebrow">${dotD(S.start)} → ${dotD(S.end)} · 一年主线 · 总进度 ${avg}%</div>
+        <div class="eyebrow">${S.year} 年度主线 · ${dotD(S.start)} → ${dotD(S.end)} · 总进度 ${avg}%</div>
         <h1 class="htitle" contenteditable="true" data-f="title" data-ph="写下这一年的大标题" spellcheck="false">${esc(S.title)}</h1>
         <p class="hsub" contenteditable="true" data-f="subtitle" data-ph="一句副标题（可选）" spellcheck="false">${esc(S.subtitle)}</p>
       </div>
@@ -408,10 +421,10 @@ function renderHero(){
     <div class="count">
       <div class="dnum"><small>D-</small><span id="dleft">0</span></div>
       <div class="cside">
-        <div class="eyebrow">距离 ${dotD(S.end)} 还剩</div>
+        <div class="eyebrow">距离 ${S.year} 年结束还剩</div>
         <div class="clock" id="clock">00:00:00</div>
         <div class="ybar"><i style="width:${(elapsed*100).toFixed(1)}%"></i></div>
-        <div class="yrow"><span>第 ${Math.min(total,Math.max(0,diff(st,now)+1))} / ${total} 天</span><span>这一年已过 ${(elapsed*100).toFixed(1)}%</span></div>
+        <div class="yrow"><span>第 ${Math.min(total,Math.max(0,diff(st,now)+1))} / ${total} 天</span><span>${S.year} 年已过 ${(elapsed*100).toFixed(1)}%</span></div>
       </div>
     </div>
     <div class="tiles">${BOARDS.map(b=>{const B=S.boards[b.id],p=bpct(b.id),dn=B.krs.filter(k=>k.done).length;return`
@@ -426,18 +439,18 @@ function renderHero(){
     <div class="ck">
       <div class="ckn">${n}<small>/${S.target}</small></div>
       <div class="ckside">
-        <div class="yrow"><span>累计打卡 · 连续 ${streak()} 天</span><span>${cp.toFixed(0)}%</span></div>
+        <div class="yrow"><span>${S.year} 年累计打卡 · 连续 ${streak()} 天</span><span>${cp.toFixed(0)}%</span></div>
         <div class="cbar"><i style="width:${cp}%"></i></div>
         <div class="grid-y" aria-label="全年打卡格子">${cells}</div>
       </div>
     </div>
-    <div class="stamp"><span>Yearline · ${S.start.slice(0,4)}–${S.end.slice(0,4)}</span><span>更新于 ${dotD(td)}</span></div>
+    <div class="stamp"><span>Yearline · ${S.year}</span><span>更新于 ${dotD(td)}</span></div>
   </div>`;
   tick();
 }
 const fmt=v=>{v=+v||0;return Number.isInteger(v)?String(v):v.toFixed(1)};
 function tick(){
-  const en=parseD(S.end);if(!en||!$('#dleft'))return;
+  const en=endEx();if(!$('#dleft'))return;
   const ms=Math.max(0,en-new Date()),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);
   $('#dleft').textContent=d;$('#clock').innerHTML=`${pad(h)}:${pad(m)}:${pad(s)}<span>时 分 秒</span>`;
 }
@@ -473,7 +486,7 @@ function renderChips(){
   $('#ckStar').setAttribute('aria-pressed',ckStar);
 }
 function renderList(){
-  $('#ckCount').textContent=`${S.checkins.length} / ${S.target}`;
+  $('#ckCount').textContent=`${yearCk().length} / ${S.target}`;
   const list=[...S.checkins].sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
   if(!list.length){$('#ckList').innerHTML='<div class="empty">还没有打卡。写下今天做的第一件事吧。</div>';return}
   const shown=showAll?list:list.slice(0,30),groups={};
@@ -509,8 +522,9 @@ function renderMs(){
 
 /* ---------- render: monthly review ---------- */
 function monthsList(){
-  const st=parseD(S.start),now=new Date(),set=new Set();
-  let d=new Date(st.getFullYear(),st.getMonth(),1);const endM=new Date(now.getFullYear(),now.getMonth(),1);
+  const now=new Date(),set=new Set(),yc=sorted(yearCk());
+  const first=[yc[0]?.date,S.created,todayS()].filter(Boolean).filter(d=>d.startsWith(S.year+'-')).sort()[0]||S.start;
+  let d=new Date(S.year,+first.slice(5,7)-1,1);const endM=new Date(Math.min(now,new Date(S.year,11,1)));
   while(d<=endM){set.add(`${d.getFullYear()}-${pad(d.getMonth()+1)}`);d.setMonth(d.getMonth()+1)}
   S.checkins.forEach(c=>set.add(c.date.slice(0,7)));
   return [...set].filter(m=>m<=ymd(now).slice(0,7)).sort().reverse();
@@ -525,11 +539,9 @@ function review(mk){
   let best=0,run=0,last=null;days.forEach(d=>{run=last&&diff(parseD(last),parseD(d))===1?run+1:1;best=Math.max(best,run);last=d});
   const krs=[];BOARDS.forEach(b=>S.boards[b.id].krs.forEach(k=>{if(k.done&&k.at&&k.at.startsWith(mk))krs.push(`${b.name}「${k.t}」`)}));
   const prev=S.checkins.filter(c=>c.date.startsWith(prevMonth(mk))).length;
-  const yearDays=Math.max(1,diff(parseD(S.start),parseD(S.end)));
+  const yearDays=diff(new Date(y,0,1),new Date(y+1,0,1));
   const pace=S.target/yearDays*dim;
-  const st=parseD(S.start);
   let expDays=dim;if(cur)expDays=now.getDate();
-  if(st.getFullYear()===y&&st.getMonth()===m-1)expDays-=st.getDate()-1;
   const expect=Math.round(S.target/yearDays*Math.max(0,expDays));
   const n=list.length,delta=n-expect;
   const status=n===0&&expect===0?['未开始','var(--mute)']:delta>=0?['跑赢节奏','var(--good)']:delta>=-Math.ceil(expect*.25)?['略落后','var(--warn)']:['明显落后','var(--bad)'];
@@ -543,10 +555,10 @@ function review(mk){
   if(best>=3)pts.push(`最长连续打卡 ${best} 天。`);
   if(krs.length)pts.push(`达成关键结果 ${krs.length} 个：${krs.join('、')}。`);
   if(prev||n)pts.push(prev?`比上个月${n>=prev?'多':'少'} ${Math.abs(n-prev)} 次（上月 ${prev} 次）。`:'上个月没有打卡记录，这是新的起点。');
-  const cum=S.checkins.filter(c=>c.date<=`${mk}-31`).length;
-  const el=Math.max(1,diff(st,now)+1),rate=S.checkins.length/el;
-  if(cur&&S.checkins.length<S.target&&rate>0){const eta=addDays(now,Math.ceil((S.target-S.checkins.length)/rate));pts.push(`累计 ${S.checkins.length}/${S.target}。照现在的速度，预计 ${dotD(ymd(eta))} 打满${ymd(eta)>S.end?'，比年底晚，需要提速':''}。`)}
-  else if(!cur)pts.push(`月底累计 ${cum}/${S.target}。`);
+  const yl=S.checkins.filter(c=>c.date.startsWith(y+'-')),cum=yl.filter(c=>c.date<=`${mk}-31`).length;
+  const f=sorted(yl)[0],el=f?Math.max(7,diff(parseD(f.date),now)+1):1,rate=f?yl.length/el:0;
+  if(cur&&yl.length<S.target&&rate>0){const eta=addDays(now,Math.ceil((S.target-yl.length)/rate));pts.push(`${y} 年累计 ${yl.length}/${S.target}。照现在的速度，预计 ${dotD(ymd(eta))} 打满${ymd(eta)>`${y}-12-31`?`，赶不上 ${y} 年底，需要提速`:''}。`)}
+  else if(!cur)pts.push(`月底 ${y} 年累计 ${cum}/${S.target}。`);
   return {n,per,days:days.length,best,krs,status,pts,cur,y,m};
 }
 function renderReviews(){
@@ -574,6 +586,9 @@ function render(){
   PARTS.forEach(([sel,fn])=>{const el=$(sel);if(a&&a!==document.body&&el.contains(a)&&(a.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(a.tagName)))return;fn()});
   renderChips();
   $('#sampleBanner').hidden=!S.sample;
+  const ny=new Date().getFullYear();
+  $('#yearBanner').hidden=S.year>=ny;
+  if(S.year<ny){$('#yearMsg').innerHTML=`<b>${ny} 年已经开始了。</b>${S.year} 年的看板会存档，打卡记录全部保留，四个板块的目标和关键结果带到新一年，勾选状态清零，你再改成新目标。`;$('#newYearBtn').textContent=`开启 ${ny} 年`}
 }
 function commit(){save();render()}
 
@@ -612,6 +627,11 @@ document.addEventListener('click',e=>{
   else if(act==='del'){if(delId===id){S.checkins=S.checkins.filter(x=>x.id!==id);delId=null;commit();toast('已删除')}else{delId=id;renderList();setTimeout(()=>{if(delId===id){delId=null;renderList()}},3000)}}
   else if(act==='more'){showAll=!showAll;renderList()}
   else if(act==='focus'){document.body.classList.toggle('focus');const on=document.body.classList.contains('focus');$('#focusLbl').textContent=on?'退出截图模式':'截图模式';window.scrollTo(0,0)}
+  else if(act==='new-year'){const ny=new Date().getFullYear();
+    S.history[S.year]={year:S.year,title:S.title,subtitle:S.subtitle,target:S.target,boards:clone(S.boards)};
+    S.year=ny;S.start=`${ny}-01-01`;S.end=`${ny}-12-31`;S.created=todayS();S.title=S.title.replace(/^\d{4}/,String(ny));
+    BOARDS.forEach(b=>{const B=S.boards[b.id];B.cur=0;B.krs.forEach(k=>{k.done=false;k.at=null})});
+    commit();toast(`${ny} 年开始，冲！`);window.scrollTo(0,0)}
   else if(act==='clear-sample'){S=blank();commit();toast('已清空，开始你的一年');}
   else if(act==='reset'){if(el.dataset.armed){S=blank();delete el.dataset.armed;el.textContent='清空全部数据';commit();toast('数据已清空')}else{el.dataset.armed=1;el.textContent='再点一次确认清空';setTimeout(()=>{delete el.dataset.armed;el.textContent='清空全部数据'},3500)}}
   else if(act==='export')doExport();
@@ -628,14 +648,13 @@ $('#ckForm').addEventListener('submit',e=>{
   if(S.sample){S=blank();toast('已清空示例，这是你的第一条打卡')}
   S.checkins.push({id:uid(),date:$('#ckDate').value||todayS(),board:ckBoard,text:tx,star:ckStar});
   $('#ckText').value='';ckStar=false;commit();
-  const n=S.checkins.length;if(MARKS.includes(n)||n===S.target)toast(`第 ${n} 次打卡，已写进人生里程碑`);else if(!S.sample)toast(`打卡成功 · ${n}/${S.target}`);
+  const n=yearCk().length;if(MARKS.includes(n)||n===S.target)toast(`第 ${n} 次打卡，已写进人生里程碑`);else if(!S.sample)toast(`打卡成功 · ${n}/${S.target}`);
 });
 
 /* ---------- import ---------- */
 const TPL=`# 这一年，全力以赴
 副标题: 工作翻倍 · 读书破万 · 身体在线 · 认真去爱
-开始: 2026-10-01
-结束: 2027-10-01
+年份: 2026
 打卡目标: 300
 
 ## 工作
@@ -690,8 +709,8 @@ function parseText(txt){
       mode=null;cur=null;return}
     if((m=line.match(/^(标题|主标题|title)\s*[:：]\s*(.+)$/i))){p.title=m[2].trim();return}
     if((m=line.match(/^(副标题|口号|slogan|subtitle)\s*[:：]\s*(.+)$/i))){p.subtitle=m[2].trim();return}
-    if((m=line.match(/^(开始|起始|开始日期|start)\s*[:：]\s*(.+)$/i))&&normD(m[2])){p.start=normD(m[2]);return}
-    if((m=line.match(/^(结束|截止|结束日期|end)\s*[:：]\s*(.+)$/i))&&normD(m[2])){p.end=normD(m[2]);return}
+    if((m=line.match(/^(年份|年度|year)\s*[:：]\s*(\d{4})/i))){p.year=+m[2];return}
+    if((m=line.match(/^(开始|起始|开始日期|start|结束|截止|结束日期|end)\s*[:：]\s*(\d{4})/i))){p.year=p.year||+m[2];return}
     if((m=line.match(/^(打卡目标|目标打卡|打卡总数|年度打卡)\s*[:：]\s*(\d+)/))){p.target=+m[2];return}
     if(mode==='review'){p.reviews[rk]=(p.reviews[rk]?p.reviews[rk]+'\n':'')+line;return}
     if((m=line.match(CK))){const b=boardOf(m[2]);if(b){let t=m[3].trim();const star=/[★⭐]/.test(t);t=t.replace(/\s*[★⭐]\s*/g,' ').trim();p.checkins.push({date:normD(m[1]),board:b,text:t,star});return}}
@@ -708,7 +727,7 @@ function parseText(txt){
 function parseJSON(o){
   const p={boards:{},checkins:[],reviews:{}};
   ['title','subtitle'].forEach(k=>{if(typeof o[k]==='string')p[k]=o[k]});
-  if(o.start&&normD(o.start))p.start=normD(o.start);if(o.end&&normD(o.end))p.end=normD(o.end);
+  if(+o.year)p.year=+o.year;else if(o.start&&normD(o.start))p.year=+normD(o.start).slice(0,4);
   if(+o.target)p.target=+o.target;
   const bl=o.boards?(Array.isArray(o.boards)?o.boards.map(x=>[x.id||x.name,x]):Object.entries(o.boards)):[];
   bl.forEach(([k,x])=>{const b=boardOf(k)||boardOf(x&&x.name);if(!b||!x)return;
@@ -725,8 +744,7 @@ function merge(base,p){
   if(N.sample){const b=blank();Object.assign(N,b);log.push('替换示例数据')}
   if(p.title&&p.title!==N.title){N.title=p.title;log.push(`大标题 → ${p.title}`)}
   if(p.subtitle&&p.subtitle!==N.subtitle){N.subtitle=p.subtitle;log.push(`副标题 → ${p.subtitle}`)}
-  if(p.start&&p.start!==N.start){N.start=p.start;if(!p.end){const e=parseD(p.start);e.setFullYear(e.getFullYear()+1);N.end=ymd(e)}log.push(`开始日期 → ${dotD(p.start)}`)}
-  if(p.end&&p.end!==N.end){N.end=p.end;log.push(`结束日期 → ${dotD(p.end)}`)}
+  if(p.year&&p.year!==N.year){N.year=p.year;N.start=`${p.year}-01-01`;N.end=`${p.year}-12-31`;log.push(`年份 → ${p.year}`)}
   if(p.target&&p.target!==N.target){N.target=p.target;log.push(`打卡目标 → ${p.target}`)}
   for(const k in p.boards){const I=p.boards[k],B=N.boards[k],nm=BM[k].name;
     if(I.goal&&I.goal!==B.goal){B.goal=I.goal;log.push(`${nm}目标 → ${I.goal}`)}
