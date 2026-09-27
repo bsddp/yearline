@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<title>一年主线</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0D0B10; --panel:#15121A; --panel2:#1D1923; --line:#2C2733; --ink:#F4EFE9; --mute:#948C9C; --dim:#4B4553; --void:#211D27;
+  --work:#4C8DFF; --study:#F5B83D; --fit:#FF5B45; --love:#FF7AC6;
+  --good:#5BD69A; --warn:#F5B83D; --bad:#FF5B45;
+  --disp:"Anton","Noto Sans SC",Impact,"Arial Narrow",sans-serif;
+  --sans:"Noto Sans SC",-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+html,body{background:var(--bg);color:var(--ink)}
+body{margin:0;font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:16px 96px}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.num{font-variant-numeric:tabular-nums}
+[contenteditable]{outline:none;border-radius:4px;transition:background .15s}
+[contenteditable]:hover{background:rgba(255,255,255,.04)}
+[contenteditable]:focus{background:rgba(255,255,255,.07);box-shadow:0 0 0 1px var(--dim)}
+[contenteditable]:empty::before{content:attr(data-ph);color:var(--dim)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(13,11,16,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-inline:-16px;padding:10px 16px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:none;color:var(--mute);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid transparent}
+.nav a:hover{color:var(--ink);border-color:var(--line)}
+.nav .sp{flex:1}
+.btn{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:8px 14px;font-size:13px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:hover{border-color:var(--dim)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad);border-color:rgba(255,91,69,.4)}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:8px}
+
+.banner{margin-top:14px;border:1px dashed var(--dim);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px;color:var(--mute)}
+.banner b{color:var(--study)}
+
+/* hero board */
+.hero{position:relative;margin-top:16px;border:1px solid var(--line);border-radius:22px;overflow:hidden;
+  background:
+    radial-gradient(110% 70% at 100% 0%,rgba(255,91,69,.16),transparent 58%),
+    radial-gradient(80% 60% at 0% 100%,rgba(76,141,255,.13),transparent 60%),
+    var(--panel)}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);height:6px}
+.strip i:nth-child(1){background:var(--work)}.strip i:nth-child(2){background:var(--study)}.strip i:nth-child(3){background:var(--fit)}.strip i:nth-child(4){background:var(--love)}
+.hero-in{padding:clamp(18px,4.4vw,44px);display:grid;gap:clamp(20px,3.6vw,34px)}
+.hero-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.htitle{margin:6px 0 0;font-weight:900;font-size:clamp(32px,7.2vw,76px);line-height:1.04;letter-spacing:-.02em;text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}
+.hsub{margin:10px 0 0;color:var(--mute);font-size:clamp(14px,2vw,18px);font-weight:500}
+.hero-actions{display:flex;gap:8px}
+.count{display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,4vw,48px);align-items:end}
+.dnum{font-family:var(--disp);font-size:clamp(104px,25vw,236px);line-height:.8;letter-spacing:-.01em;display:flex;align-items:flex-start;font-variant-numeric:tabular-nums}
+.dnum small{font-size:.32em;color:var(--fit);margin-right:.08em;line-height:1;padding-top:.08em}
+.cside{display:grid;gap:10px;padding-bottom:4px;min-width:0}
+.clock{font-family:var(--mono);font-size:clamp(20px,3.6vw,34px);font-weight:600;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.clock span{color:var(--mute);font-size:.5em;font-weight:400;margin-left:.3em}
+.ybar{height:8px;background:var(--void);border-radius:99px;overflow:hidden}
+.ybar i{display:block;height:100%;background:linear-gradient(90deg,var(--work),var(--study),var(--fit),var(--love));border-radius:99px;transition:width .8s}
+.yrow{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--mute);font-family:var(--mono)}
+
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2.4vw,24px)}
+.tile{display:grid;gap:8px;align-content:start;padding-top:14px;border-top:1px solid var(--line);min-width:0}
+.tile .th{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tile .nm{font-weight:900;font-size:17px}
+.tile .en{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--mute)}
+.tile .pct{font-family:var(--disp);font-size:clamp(46px,7vw,72px);line-height:.9;font-variant-numeric:tabular-nums}
+.tile .pct small{font-size:.42em;margin-left:2px}
+.tile .goal{font-size:13px;color:var(--mute);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.9em}
+.segs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.segs i{height:10px;border-radius:3px;background:var(--void);transition:background .4s}
+.tile .kr-n{font-family:var(--mono);font-size:11px;color:var(--mute)}
+
+.ck{display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,3vw,36px);align-items:center;border-top:1px solid var(--line);padding-top:18px}
+.ckn{font-family:var(--disp);font-size:clamp(56px,10vw,96px);line-height:.85;font-variant-numeric:tabular-nums}
+.ckn small{font-size:.38em;color:var(--mute)}
+.ckside{display:grid;gap:10px;min-width:0}
+.cbar{height:12px;background:var(--void);border-radius:99px;overflow:hidden}
+.cbar i{display:block;height:100%;background:var(--ink);border-radius:99px;transition:width .8s}
+.grid-y{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;grid-auto-columns:1fr;gap:2px}
+.grid-y i{aspect-ratio:1;border-radius:1.5px;background:var(--void)}
+.grid-y i.fut{background:#18151C}
+.grid-y i.pad{background:transparent}
+.grid-y i.today{box-shadow:0 0 0 1.5px var(--ink)}
+.stamp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+
+/* focus mode for screenshot */
+body.focus .wrap>*:not(.hero){display:none}
+body.focus .wrap{max-width:560px;padding-block:12px}
+body.focus .tiles{grid-template-columns:repeat(2,1fr)}
+body.focus .count{grid-template-columns:1fr}
+body.focus .hero{margin-top:0}
+
+/* sections */
+section{margin-top:64px;scroll-margin-top:64px}
+.sh{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.sh h2{margin:4px 0 0;font-size:clamp(26px,4.4vw,40px);font-weight:900;letter-spacing:-.01em;line-height:1.1}
+.sh p{margin:6px 0 0;color:var(--mute);font-size:14px;max-width:44em}
+
+.boards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.bcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:14px;min-width:0}
+.bhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bname{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.bpct{font-family:var(--disp);font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.glabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
+.gtext{font-size:19px;font-weight:700;line-height:1.35;padding:2px 4px;margin:2px -4px 0}
+.metric{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
+.metric input{width:74px;background:var(--void);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-family:var(--mono);font-size:13px;text-align:right}
+.metric input.u{width:64px;text-align:left;font-family:var(--sans)}
+.mbar{flex:1 1 100%;height:4px;background:var(--void);border-radius:9px;overflow:hidden}
+.mbar i{display:block;height:100%}
+.krs{display:grid;gap:8px}
+.kr{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);border:1px solid transparent}
+.kr.done{border-color:var(--line)}
+.kr.done .kt{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--dim)}
+.cb{width:26px;height:26px;border-radius:8px;border:2px solid var(--dim);background:transparent;display:grid;place-items:center;padding:0;flex:none}
+.cb svg{width:14px;height:14px;opacity:0}
+.kr.done .cb svg{opacity:1}
+.kt{font-size:15px;padding:2px 4px;min-width:0;word-break:break-word}
+.kat{font-family:var(--mono);font-size:11px;color:var(--mute)}
+
+/* checkin */
+.ckform{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:700;display:inline-flex;gap:8px;align-items:center}
+.chip[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#0D0B10}
+.chip[aria-pressed="true"] .dot{background:#0D0B10!important}
+.frow{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center}
+.inp{background:var(--void);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;min-width:0;width:100%}
+.inp:focus{border-color:var(--dim);outline:none}
+input[type=date].inp{width:auto}
+.star{border:1px solid var(--line);background:transparent;border-radius:10px;padding:9px 12px;color:var(--mute)}
+.star[aria-pressed="true"]{color:var(--study);border-color:var(--study)}
+.cklist{margin-top:18px;display:grid;gap:18px}
+.day h4{margin:0 0 6px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--mute);letter-spacing:.06em;display:flex;gap:10px}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.tag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;color:#0D0B10;white-space:nowrap}
+.itext{min-width:0;word-break:break-word}
+.itext .s{color:var(--study);margin-left:6px}
+.iact{display:flex;gap:4px}
+.iact button{background:transparent;border:0;color:var(--mute);font-size:12px;padding:4px 6px;border-radius:6px}
+.iact button:hover{color:var(--ink);background:var(--panel2)}
+.iact button.warn{color:var(--bad)}
+.edit{display:grid;grid-template-columns:auto auto 1fr auto auto auto;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.edit select{background:var(--void);border:1px solid var(--line);border-radius:10px;padding:9px}
+.empty{color:var(--mute);padding:28px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+
+/* milestones */
+.tl{position:relative;display:grid;gap:4px;padding-left:28px}
+.tl::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.ms{position:relative;padding:10px 0 14px}
+.ms .pin{position:absolute;left:-28px;top:13px;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--c);display:grid;place-items:center}
+.ms .pin i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.ms.big .pin{background:var(--c)}
+.ms.big .pin i{background:var(--bg)}
+.ms .md{font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.ms .mt{font-weight:900;font-size:18px;line-height:1.3}
+.ms.big .mt{font-size:clamp(22px,3.4vw,30px)}
+.ms .mx{color:var(--mute);font-size:14px}
+.ms .next{color:var(--dim)}
+.ms.nextm .pin{border-style:dashed;border-color:var(--dim)}
+.ms.nextm .pin i{background:transparent}
+
+/* review */
+.reviews{display:grid;gap:14px}
+.rv{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:16px}
+.rvh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rvh h3{margin:0;font-size:24px;font-weight:900}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid currentColor}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:var(--panel2);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-family:var(--disp);font-size:30px;font-weight:400;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--mute)}
+.bmix{display:grid;gap:6px}
+.bm{display:grid;grid-template-columns:3em 1fr 2.4em;gap:10px;align-items:center;font-size:13px}
+.bm .bt{height:8px;background:var(--void);border-radius:9px;overflow:hidden}
+.bm .bt i{display:block;height:100%;border-radius:9px}
+.bm .bn{text-align:right;font-family:var(--mono);color:var(--mute)}
+.auto{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:14.5px}
+.auto li::marker{color:var(--dim)}
+.rv textarea{background:var(--void);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:84px;resize:vertical;width:100%;font-size:14px;line-height:1.6}
+
+/* import */
+.imp{display:grid;grid-template-columns:1.1fr 1fr;gap:14px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:12px;align-content:start;min-width:0}
+.drop{border:2px dashed var(--dim);border-radius:14px;padding:26px 16px;text-align:center;display:grid;gap:6px;justify-items:center;transition:border-color .2s,background .2s}
+.drop.on{border-color:var(--ink);background:rgba(255,255,255,.04)}
+.drop strong{font-size:17px}
+.drop span{font-size:13px;color:var(--mute)}
+.box textarea{background:var(--void);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:120px;resize:vertical;width:100%;font-family:var(--mono);font-size:12.5px;line-height:1.6}
+.box pre{margin:0;background:var(--void);border-radius:12px;padding:14px;font-family:var(--mono);font-size:12px;line-height:1.65;color:#CFC7D6;overflow-x:auto;max-height:420px}
+.preview{border:1px solid var(--good);border-radius:14px;padding:14px;display:grid;gap:10px}
+.preview.bad{border-color:var(--bad)}
+.preview ul{margin:0;padding-left:1.1em;font-size:13.5px;display:grid;gap:3px;max-height:260px;overflow:auto}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--mute);font-size:13px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:820px){
+  .tiles{grid-template-columns:repeat(2,1fr);row-gap:20px}
+  .boards,.imp{grid-template-columns:1fr}
+  .count{grid-template-columns:1fr;gap:14px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:520px){
+  .frow{grid-template-columns:1fr auto auto}
+  .frow input[type=date]{grid-column:1/-1;width:100%}
+  .edit{grid-template-columns:1fr 1fr}
+  .edit .inp.t{grid-column:1/-1}
+  .ck{grid-template-columns:1fr}
+  .hero-actions .btn span{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav" aria-label="页面导航">
+    <a href="#board">看板</a><a href="#lines">主线</a><a href="#checkin">打卡</a><a href="#milestones">里程碑</a><a href="#review">月度复盘</a><a href="#import">资料</a>
+  </nav>
+  <div id="sampleBanner" class="banner" hidden>
+    <span>现在显示的是<b>示例数据</b>，用来演示效果。上传你的资料后会自动替换。</span>
+    <button class="btn sm" data-act="clear-sample">清空示例，从零开始</button>
+    <a class="btn sm ghost" href="#import" style="text-decoration:none">去上传资料</a>
+  </div>
+
+  <div class="hero" id="board"></div>
+
+  <section id="lines">
+    <div class="sh"><div><div class="eyebrow">Main lines · 4 boards</div><h2>一年主线</h2><p>每个板块一个量化年度目标、三个关键结果。只有勾选关键结果才推进度条。文字都可以直接点击修改。</p></div></div>
+    <div class="boards" id="boards"></div>
+  </section>
+
+  <section id="checkin">
+    <div class="sh"><div><div class="eyebrow">Daily check-in</div><h2>每日打卡 <span class="num" id="ckCount"></span></h2><p>每条打卡挂到一个板块。打满关键次数、标星的高光时刻会自动写进人生里程碑。</p></div></div>
+    <form class="ckform" id="ckForm" autocomplete="off">
+      <div class="chips" id="ckChips" role="group" aria-label="选择板块"></div>
+      <div class="frow">
+        <input class="inp" type="date" id="ckDate" aria-label="日期">
+        <input class="inp" id="ckText" placeholder="今天做了什么？例：晨跑 5km / 读完第 3 章" aria-label="打卡内容" maxlength="140">
+        <button type="button" class="star" id="ckStar" aria-pressed="false" title="标为高光时刻，记入里程碑">★</button>
+        <button class="btn primary" type="submit">打卡</button>
+      </div>
+    </form>
+    <div class="cklist" id="ckList"></div>
+  </section>
+
+  <section id="milestones">
+    <div class="sh"><div><div class="eyebrow">Life milestones</div><h2>人生里程碑</h2><p>自动记录：启动日、第 1 / 10 / 30 / 50 / 100 … 次打卡、每个关键结果达成、你标星的打卡。</p></div></div>
+    <div class="tl" id="msList"></div>
+  </section>
+
+  <section id="review">
+    <div class="sh"><div><div class="eyebrow">Monthly review</div><h2>月度复盘</h2><p>按月自动统计打卡、节奏和板块分布，生成复盘要点。下面的输入框留给你自己的总结。</p></div></div>
+    <div class="reviews" id="rvList"></div>
+  </section>
+
+  <section id="import">
+    <div class="sh"><div><div class="eyebrow">Materials · incremental update</div><h2>上传资料</h2><p>支持 .md / .txt / .json / .docx，或直接粘贴文字。每次导入是增量合并：同样的打卡不会重复，已勾选的关键结果不会被取消。</p></div></div>
+    <div class="imp">
+      <div class="box">
+        <label class="drop" id="drop" for="file">
+          <strong>点这里选文件，或把文件拖进来</strong>
+          <span>.md · .txt · .json · .docx，可一次选多个</span>
+        </label>
+        <input type="file" id="file" accept=".md,.markdown,.txt,.json,.docx" multiple hidden>
+        <textarea id="paste" placeholder="也可以把资料直接粘贴到这里……"></textarea>
+        <div class="row"><button class="btn primary" data-act="parse-paste">解析粘贴的内容</button><span class="muted" id="impMsg"></span></div>
+        <div id="preview"></div>
+        <div class="row" style="border-top:1px solid var(--line);padding-top:12px">
+          <button class="btn sm" data-act="export">导出备份 (.json)</button>
+          <button class="btn sm danger" data-act="reset" id="resetBtn">清空全部数据</button>
+        </div>
+        <textarea id="exportBox" readonly hidden aria-label="备份内容"></textarea>
+      </div>
+      <div class="box">
+        <div class="row" style="justify-content:space-between"><span class="eyebrow">资料格式 · 照着写就能识别</span><button class="btn sm" data-act="copy-tpl">复制模板</button></div>
+        <pre id="tpl"></pre>
+        <p class="muted" style="margin:0">规则：<code>## 板块名</code> 下写目标、指标和关键结果；<code>[x]</code> 表示已达成；打卡行写成「日期 板块 内容」，末尾加 ★ 记为高光。写得随意的材料也可以先发给 Claude，让它整理成这个格式再上传。</p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const KEY='yearline.v1';
+const BOARDS=[
+  {id:'work',name:'工作',en:'WORK',c:'var(--work)'},
+  {id:'study',name:'学习',en:'STUDY',c:'var(--study)'},
+  {id:'fit',name:'健身',en:'FITNESS',c:'var(--fit)'},
+  {id:'love',name:'恋爱',en:'LOVE',c:'var(--love)'}];
+const BM=Object.fromEntries(BOARDS.map(b=>[b.id,b]));
+const ALIAS={work:['工作','事业','职业','职场','work','career','job'],study:['学习','读书','成长','study','learn','learning'],fit:['健身','运动','身体','健康','fit','fitness','gym','health'],love:['恋爱','感情','爱情','约会','伴侣','love','relationship','dating']};
+const MARKS=[1,10,30,50,100,150,200,250,300,400,500];
+
+/* ---------- utils ---------- */
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseD=s=>{const m=String(s||'').match(/(\d{4})\s*[-/.年]\s*(\d{1,2})\s*[-/.月]\s*(\d{1,2})/);return m?new Date(+m[1],+m[2]-1,+m[3]):null};
+const normD=s=>{const d=parseD(s);return d?ymd(d):null};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const day0=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+const diff=(a,b)=>Math.round((day0(b)-day0(a))/864e5);
+const dotD=s=>s?s.replace(/-/g,'.'):'';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+const todayS=()=>ymd(new Date());
+const clone=o=>JSON.parse(JSON.stringify(o));
+function boardOf(s){
+  s=String(s||'').trim().toLowerCase().replace(/^[#\s【\[(（]+|[】\])）:：\s]+$/g,'');
+  if(!s) return null;
+  for(const k in ALIAS){ if(ALIAS[k].some(a=>s===a||s.startsWith(a))) return k; }
+  return null;
+}
+let toastT;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ---------- state ---------- */
+function blank(){
+  const t=new Date(),e=new Date(t);e.setFullYear(e.getFullYear()+1);
+  return {v:1,title:'这一年，全力以赴',subtitle:'',start:ymd(t),end:ymd(e),target:300,
+    boards:Object.fromEntries(BOARDS.map(b=>[b.id,{goal:'',cur:0,tgt:0,unit:'',krs:[0,1,2].map(()=>({t:'',done:false,at:null}))}])),
+    checkins:[],reviews:{},sample:false};
+}
+function sample(){
+  const S=blank(),t=new Date(),st=addDays(t,-40),e=new Date(st);e.setFullYear(e.getFullYear()+1);
+  Object.assign(S,{start:ymd(st),end:ymd(e),title:'这一年，把自己练成狠角色',subtitle:'工作翻倍 · 读书破万 · 身体在线 · 认真去爱',sample:true});
+  const g={
+    work:['年度营收贡献 50 万',12,50,'万',['Q4 独立负责 1 个完整项目','拿下 3 个长期客户','年底前完成晋升答辩'],[true,false,false]],
+    study:['一年读完 24 本书',5,24,'本',['每月读 2 本并写书评','考下 1 张专业证书','学完一门系统课程'],[true,true,false]],
+    fit:['全年跑量 1000 km',86,1000,'km',['每周训练 4 次，连续 12 周','完成一次半程马拉松','体脂率降到 15%'],[false,false,false]],
+    love:['认真约会 50 次',6,50,'次',['每月一次不看手机的约会','一起旅行 2 次','见彼此最好的朋友'],[true,false,false]]};
+  let dd=20;
+  for(const k in g){const [goal,cur,tgt,unit,krs,done]=g[k];Object.assign(S.boards[k],{goal,cur,tgt,unit,krs:krs.map((x,i)=>({t:x,done:done[i],at:done[i]?ymd(addDays(t,-(dd-=4))):null}))});}
+  const txt={work:['整理客户需求清单','完成方案初稿','复盘本周项目进度','和主管 1on1','跟进两个意向客户'],study:['读《纳瓦尔宝典》40 页','写完第一篇书评','证书课程第 3 讲','刷 20 道题','读完《原则》第 2 部分'],fit:['晨跑 5km','力量训练 45 分钟','间歇跑 6×400m','拉伸 + 泡沫轴放松','长距离慢跑 12km'],love:['一起做晚饭','周末去看展','认真聊了未来一年的计划','送了一束花','视频聊到很晚']};
+  let seed=11;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+  for(let i=39;i>=0;i--){ if(rnd()<.22) continue; const n=rnd()<.35?2:1;
+    for(let j=0;j<n;j++){const b=BOARDS[Math.floor(rnd()*4)].id;const arr=txt[b];S.checkins.push({id:uid(),date:ymd(addDays(t,-i)),board:b,text:arr[Math.floor(rnd()*arr.length)],star:false});}}
+  const lr=S.checkins.filter(c=>c.board==='fit').pop(); if(lr){lr.text='第一次跑进 25 分钟 5km';lr.star=true;}
+  return S;
+}
+function load(){try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);if(s&&s.boards)return fix(s);}}catch(e){}return sample()}
+function fix(s){const b=blank();s=Object.assign(b,s);BOARDS.forEach(x=>{s.boards[x.id]=Object.assign(blank().boards[x.id],s.boards[x.id]||{});const k=s.boards[x.id].krs;while(k.length<3)k.push({t:'',done:false,at:null});k.length=3;});s.checkins=(s.checkins||[]).filter(c=>c&&c.date&&BM[c.board]);s.reviews=s.reviews||{};return s}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- derived ---------- */
+const bpct=id=>Math.round(S.boards[id].krs.filter(k=>k.done).length/3*100);
+const sorted=()=>[...S.checkins].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+function streak(){const set=new Set(S.checkins.map(c=>c.date));let d=new Date(),n=0;if(!set.has(ymd(d)))d=addDays(d,-1);while(set.has(ymd(d))){n++;d=addDays(d,-1)}return n}
+function milestones(){
+  const out=[],sc=sorted(),marks=MARKS.filter(n=>n<=S.target);if(!marks.includes(S.target))marks.push(S.target);
+  marks.forEach(n=>{if(sc.length>=n){const c=sc[n-1];out.push({date:c.date,kind:'count',big:n>=100||n===S.target,title:n===S.target?`打卡 ${n} 次，年度目标达成`:`第 ${n} 次打卡`,text:c.text,board:c.board})}});
+  BOARDS.forEach(b=>S.boards[b.id].krs.forEach(k=>{if(k.done&&k.t)out.push({date:k.at||S.start,kind:'kr',big:true,title:`${b.name} · 关键结果达成`,text:k.t,board:b.id})}));
+  BOARDS.forEach(b=>{if(bpct(b.id)===100)out.push({date:S.boards[b.id].krs.map(k=>k.at||'').sort().pop()||todayS(),kind:'board',big:true,title:`${b.name}板块全部达成`,text:S.boards[b.id].goal,board:b.id})});
+  S.checkins.filter(c=>c.star).forEach(c=>out.push({date:c.date,kind:'star',big:false,title:'高光时刻',text:c.text,board:c.board}));
+  out.push({date:S.start,kind:'start',big:true,title:'一年主线启动',text:S.title,board:null});
+  const rank={start:0,count:1,kr:2,board:3,star:4};
+  out.sort((a,b)=>a.date===b.date?rank[b.kind]-rank[a.kind]:(a.date<b.date?1:-1));
+  const next=marks.find(n=>n>sc.length);
+  return {list:out,next,left:next?next-sc.length:0};
+}
+
+/* ---------- render: hero ---------- */
+function renderHero(){
+  const st=parseD(S.start),en=parseD(S.end),now=new Date(),total=Math.max(1,diff(st,en));
+  const elapsed=Math.min(1,Math.max(0,(now-st)/(en-st)));
+  const n=S.checkins.length,cp=Math.min(100,n/S.target*100);
+  const byDay={};S.checkins.forEach(c=>{(byDay[c.date]=byDay[c.date]||{})[c.board]=(byDay[c.date]?.[c.board]||0)+1});
+  let cells='';const off=(st.getDay()+6)%7;for(let i=0;i<off;i++)cells+='<i class="pad"></i>';
+  const td=todayS();
+  for(let i=0;i<total;i++){const d=ymd(addDays(st,i)),m=byDay[d];let cls='',sty='';
+    if(m){const top=Object.entries(m).sort((a,b)=>b[1]-a[1])[0][0];sty=`background:${BM[top].c}`}
+    else if(d>td)cls='fut';
+    if(d===td)cls+=' today';
+    cells+=`<i class="${cls}" style="${sty}" title="${d}"></i>`;}
+  const avg=Math.round(BOARDS.reduce((s,b)=>s+bpct(b.id),0)/4);
+  $('#board').innerHTML=`
+  <div class="strip"><i></i><i></i><i></i><i></i></div>
+  <div class="hero-in">
+    <div class="hero-top">
+      <div style="min-width:0;flex:1">
+        <div class="eyebrow">${dotD(S.start)} → ${dotD(S.end)} · 一年主线 · 总进度 ${avg}%</div>
+        <h1 class="htitle" contenteditable="true" data-f="title" data-ph="写下这一年的大标题" spellcheck="false">${esc(S.title)}</h1>
+        <p class="hsub" contenteditable="true" data-f="subtitle" data-ph="一句副标题（可选）" spellcheck="false">${esc(S.subtitle)}</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn sm" data-act="focus" title="只显示看板，方便截图">⛶ <span id="focusLbl">截图模式</span></button>
+      </div>
+    </div>
+    <div class="count">
+      <div class="dnum"><small>D-</small><span id="dleft">0</span></div>
+      <div class="cside">
+        <div class="eyebrow">距离 ${dotD(S.end)} 还剩</div>
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="ybar"><i style="width:${(elapsed*100).toFixed(1)}%"></i></div>
+        <div class="yrow"><span>第 ${Math.min(total,Math.max(0,diff(st,now)+1))} / ${total} 天</span><span>这一年已过 ${(elapsed*100).toFixed(1)}%</span></div>
+      </div>
+    </div>
+    <div class="tiles">${BOARDS.map(b=>{const B=S.boards[b.id],p=bpct(b.id),dn=B.krs.filter(k=>k.done).length;return`
+      <div class="tile">
+        <div class="th"><span class="nm">${b.name}</span><span class="en">${b.en}</span></div>
+        <div class="pct num" style="color:${b.c}">${p}<small>%</small></div>
+        <div class="segs">${B.krs.map(k=>`<i style="${k.done?'background:'+b.c:''}"></i>`).join('')}</div>
+        <div class="goal">${B.goal?esc(B.goal):'<span style="color:var(--dim)">还没写年度目标</span>'}</div>
+        <div class="kr-n">KR ${dn}/3${B.tgt?` · ${fmt(B.cur)}/${fmt(B.tgt)} ${esc(B.unit)}`:''}</div>
+      </div>`}).join('')}
+    </div>
+    <div class="ck">
+      <div class="ckn">${n}<small>/${S.target}</small></div>
+      <div class="ckside">
+        <div class="yrow"><span>累计打卡 · 连续 ${streak()} 天</span><span>${cp.toFixed(0)}%</span></div>
+        <div class="cbar"><i style="width:${cp}%"></i></div>
+        <div class="grid-y" aria-label="全年打卡格子">${cells}</div>
+      </div>
+    </div>
+    <div class="stamp"><span>Yearline · ${S.start.slice(0,4)}–${S.end.slice(0,4)}</span><span>更新于 ${dotD(td)}</span></div>
+  </div>`;
+  tick();
+}
+const fmt=v=>{v=+v||0;return Number.isInteger(v)?String(v):v.toFixed(1)};
+function tick(){
+  const en=parseD(S.end);if(!en||!$('#dleft'))return;
+  const ms=Math.max(0,en-new Date()),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);
+  $('#dleft').textContent=d;$('#clock').innerHTML=`${pad(h)}:${pad(m)}:${pad(s)}<span>时 分 秒</span>`;
+}
+
+/* ---------- render: boards ---------- */
+const CHECK='<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke="#0D0B10" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function renderBoards(){
+  $('#boards').innerHTML=BOARDS.map(b=>{const B=S.boards[b.id],p=bpct(b.id),mp=B.tgt?Math.min(100,B.cur/B.tgt*100):0;return`
+  <article class="bcard">
+    <div class="bhead"><div class="bname"><span class="dot" style="background:${b.c}"></span>${b.name}</div><div class="bpct" style="color:${b.c}">${p}%</div></div>
+    <div><div class="glabel">年度目标</div>
+      <div class="gtext" contenteditable="true" data-f="goal" data-b="${b.id}" data-ph="点击填写一个可量化的年度目标" spellcheck="false">${esc(B.goal)}</div></div>
+    <div class="metric">
+      <span>当前</span><input type="number" step="any" id="cur-${b.id}" data-m="cur" data-b="${b.id}" value="${B.cur||''}" placeholder="0" aria-label="${b.name}当前值">
+      <span>/ 目标</span><input type="number" step="any" id="tgt-${b.id}" data-m="tgt" data-b="${b.id}" value="${B.tgt||''}" placeholder="0" aria-label="${b.name}目标值">
+      <input class="u" id="unit-${b.id}" data-m="unit" data-b="${b.id}" value="${esc(B.unit)}" placeholder="单位" aria-label="${b.name}单位">
+      <div class="mbar"><i style="width:${mp}%;background:${b.c};opacity:.55"></i></div>
+    </div>
+    <div class="krs">${B.krs.map((k,i)=>`
+      <div class="kr ${k.done?'done':''}">
+        <button class="cb" data-act="kr" data-b="${b.id}" data-i="${i}" aria-pressed="${k.done}" aria-label="勾选关键结果 ${i+1}" style="${k.done?`background:${b.c};border-color:${b.c}`:''}">${CHECK}</button>
+        <div class="kt" contenteditable="true" data-f="kr" data-b="${b.id}" data-i="${i}" data-ph="关键结果 ${i+1}" spellcheck="false">${esc(k.t)}</div>
+        <span class="kat">${k.done&&k.at?dotD(k.at).slice(5):''}</span>
+      </div>`).join('')}</div>
+  </article>`}).join('');
+}
+
+/* ---------- render: check-in ---------- */
+let ckBoard='work',ckStar=false,editId=null,delId=null,showAll=false;
+try{ckBoard=localStorage.getItem(KEY+'.lastBoard')||'work'}catch(e){}
+function renderChips(){
+  $('#ckChips').innerHTML=BOARDS.map(b=>`<button type="button" class="chip" style="--c:${b.c}" data-act="chip" data-b="${b.id}" aria-pressed="${ckBoard===b.id}"><span class="dot" style="background:${b.c}"></span>${b.name}</button>`).join('');
+  $('#ckStar').setAttribute('aria-pressed',ckStar);
+}
+function renderList(){
+  $('#ckCount').textContent=`${S.checkins.length} / ${S.target}`;
+  const list=[...S.checkins].sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
+  if(!list.length){$('#ckList').innerHTML='<div class="empty">还没有打卡。写下今天做的第一件事吧。</div>';return}
+  const shown=showAll?list:list.slice(0,30),groups={};
+  shown.forEach(c=>(groups[c.date]=groups[c.date]||[]).push(c));
+  const wk='日一二三四五六';
+  $('#ckList').innerHTML=Object.keys(groups).map(d=>`<div class="day"><h4><span>${dotD(d)}</span><span>周${wk[parseD(d).getDay()]}</span>${d===todayS()?'<span style="color:var(--ink)">今天</span>':''}</h4>
+    ${groups[d].map(c=>c.id===editId?`
+      <div class="edit">
+        <input class="inp" type="date" id="e-date" value="${c.date}" aria-label="日期">
+        <select id="e-board" aria-label="板块">${BOARDS.map(b=>`<option value="${b.id}" ${b.id===c.board?'selected':''}>${b.name}</option>`).join('')}</select>
+        <input class="inp t" id="e-text" value="${esc(c.text)}" aria-label="内容">
+        <label class="muted" style="display:flex;gap:4px;align-items:center"><input type="checkbox" id="e-star" ${c.star?'checked':''}>★</label>
+        <button class="btn sm primary" data-act="e-save" data-id="${c.id}">保存</button>
+        <button class="btn sm" data-act="e-cancel">取消</button>
+      </div>`:`
+      <div class="item">
+        <span class="tag" style="background:${BM[c.board].c}">${BM[c.board].name}</span>
+        <div class="itext">${esc(c.text)}${c.star?'<span class="s" title="高光时刻">★</span>':''}</div>
+        <div class="iact"><button data-act="edit" data-id="${c.id}">编辑</button><button data-act="del" data-id="${c.id}" class="${delId===c.id?'warn':''}">${delId===c.id?'确认删除':'删除'}</button></div>
+      </div>`).join('')}</div>`).join('')+
+    (list.length>30?`<div><button class="btn sm" data-act="more">${showAll?'收起':'显示全部 '+list.length+' 条'}</button></div>`:'');
+}
+
+/* ---------- render: milestones ---------- */
+function renderMs(){
+  const {list,next,left}=milestones();
+  const nx=next?`<div class="ms nextm" style="--c:var(--dim)"><span class="pin"><i></i></span><div class="md">下一站</div><div class="mt next">第 ${next} 次打卡</div><div class="mx">还差 ${left} 次</div></div>`:'';
+  $('#msList').innerHTML=nx+list.map(m=>{const c=m.board?BM[m.board].c:'var(--ink)';return`
+    <div class="ms ${m.big?'big':''}" style="--c:${c}"><span class="pin"><i></i></span>
+      <div class="md">${dotD(m.date)}${m.board?' · '+BM[m.board].name:''}</div>
+      <div class="mt">${esc(m.title)}</div>${m.text?`<div class="mx">${esc(m.text)}</div>`:''}</div>`}).join('');
+}
+
+/* ---------- render: monthly review ---------- */
+function monthsList(){
+  const st=parseD(S.start),now=new Date(),set=new Set();
+  let d=new Date(st.getFullYear(),st.getMonth(),1);const endM=new Date(now.getFullYear(),now.getMonth(),1);
+  while(d<=endM){set.add(`${d.getFullYear()}-${pad(d.getMonth()+1)}`);d.setMonth(d.getMonth()+1)}
+  S.checkins.forEach(c=>set.add(c.date.slice(0,7)));
+  return [...set].filter(m=>m<=ymd(now).slice(0,7)).sort().reverse();
+}
+function prevMonth(mk){const [y,m]=mk.split('-').map(Number);const d=new Date(y,m-2,1);return `${d.getFullYear()}-${pad(d.getMonth()+1)}`}
+function review(mk){
+  const [y,m]=mk.split('-').map(Number),dim=new Date(y,m,0).getDate(),now=new Date();
+  const cur=mk===ymd(now).slice(0,7);
+  const list=S.checkins.filter(c=>c.date.startsWith(mk));
+  const per=Object.fromEntries(BOARDS.map(b=>[b.id,list.filter(c=>c.board===b.id).length]));
+  const days=[...new Set(list.map(c=>c.date))].sort();
+  let best=0,run=0,last=null;days.forEach(d=>{run=last&&diff(parseD(last),parseD(d))===1?run+1:1;best=Math.max(best,run);last=d});
+  const krs=[];BOARDS.forEach(b=>S.boards[b.id].krs.forEach(k=>{if(k.done&&k.at&&k.at.startsWith(mk))krs.push(`${b.name}「${k.t}」`)}));
+  const prev=S.checkins.filter(c=>c.date.startsWith(prevMonth(mk))).length;
+  const yearDays=Math.max(1,diff(parseD(S.start),parseD(S.end)));
+  const pace=S.target/yearDays*dim;
+  const st=parseD(S.start);
+  let expDays=dim;if(cur)expDays=now.getDate();
+  if(st.getFullYear()===y&&st.getMonth()===m-1)expDays-=st.getDate()-1;
+  const expect=Math.round(S.target/yearDays*Math.max(0,expDays));
+  const n=list.length,delta=n-expect;
+  const status=n===0&&expect===0?['未开始','var(--mute)']:delta>=0?['跑赢节奏','var(--good)']:delta>=-Math.ceil(expect*.25)?['略落后','var(--warn)']:['明显落后','var(--bad)'];
+  const pts=[];
+  pts.push(`${cur?'本月到今天':'这个月'}打卡 ${n} 次，覆盖 ${days.length} 天；按 ${S.target} 次/年的节奏应有 ${expect} 次，${delta>=0?`超出 ${delta} 次`:`还差 ${-delta} 次`}。`);
+  const ranked=BOARDS.map(b=>[b,per[b.id]]).sort((a,b)=>b[1]-a[1]);
+  if(n){pts.push(`投入最多的是${ranked[0][0].name}（${ranked[0][1]} 次，占 ${Math.round(ranked[0][1]/n*100)}%）。`);
+    const zero=ranked.filter(r=>!r[1]).map(r=>r[0].name);
+    if(zero.length)pts.push(`${zero.join('、')}本月零打卡，下个月优先补上。`);
+    else pts.push('四个板块都有打卡，主线没有掉线。');}
+  if(best>=3)pts.push(`最长连续打卡 ${best} 天。`);
+  if(krs.length)pts.push(`达成关键结果 ${krs.length} 个：${krs.join('、')}。`);
+  if(prev||n)pts.push(prev?`比上个月${n>=prev?'多':'少'} ${Math.abs(n-prev)} 次（上月 ${prev} 次）。`:'上个月没有打卡记录，这是新的起点。');
+  const cum=S.checkins.filter(c=>c.date<=`${mk}-31`).length;
+  const el=Math.max(1,diff(st,now)+1),rate=S.checkins.length/el;
+  if(cur&&S.checkins.length<S.target&&rate>0){const eta=addDays(now,Math.ceil((S.target-S.checkins.length)/rate));pts.push(`累计 ${S.checkins.length}/${S.target}。照现在的速度，预计 ${dotD(ymd(eta))} 打满${ymd(eta)>S.end?'，比年底晚，需要提速':''}。`)}
+  else if(!cur)pts.push(`月底累计 ${cum}/${S.target}。`);
+  return {n,per,days:days.length,best,krs,status,pts,cur,y,m};
+}
+function renderReviews(){
+  const ms=monthsList();
+  if(!ms.length){$('#rvList').innerHTML='<div class="empty">主线开始后，每个月会自动生成一份复盘。</div>';return}
+  $('#rvList').innerHTML=ms.map(mk=>{const r=review(mk),mx=Math.max(1,...Object.values(r.per));return`
+  <article class="rv">
+    <div class="rvh"><h3>${r.y} 年 ${r.m} 月${r.cur?' <span class="muted" style="font-weight:400;font-size:14px">进行中</span>':''}</h3><span class="pill" style="color:${r.status[1]}">${r.status[0]}</span></div>
+    <div class="stats">
+      <div class="stat"><b>${r.n}</b><span>打卡次数</span></div>
+      <div class="stat"><b>${r.days}</b><span>活跃天数</span></div>
+      <div class="stat"><b>${r.best}</b><span>最长连续</span></div>
+      <div class="stat"><b>${r.krs.length}</b><span>达成 KR</span></div>
+    </div>
+    <div class="bmix">${BOARDS.map(b=>`<div class="bm"><span>${b.name}</span><div class="bt"><i style="width:${r.per[b.id]/mx*100}%;background:${b.c}"></i></div><span class="bn">${r.per[b.id]}</span></div>`).join('')}</div>
+    <ul class="auto">${r.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
+    <textarea id="rv-${mk}" data-rv="${mk}" placeholder="我的复盘：这个月最大的收获、最该改的一件事、下个月只抓哪一件……">${esc(S.reviews[mk]||'')}</textarea>
+  </article>`}).join('');
+}
+
+/* ---------- render all ---------- */
+const PARTS=[['#board',renderHero],['#boards',renderBoards],['#ckList',renderList],['#msList',renderMs],['#rvList',renderReviews]];
+function render(){
+  const a=document.activeElement;
+  PARTS.forEach(([sel,fn])=>{const el=$(sel);if(a&&a!==document.body&&el.contains(a)&&(a.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(a.tagName)))return;fn()});
+  renderChips();
+  $('#sampleBanner').hidden=!S.sample;
+}
+function commit(){save();render()}
+
+/* ---------- events ---------- */
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.f){
+    const v=t.innerText.replace(/\n+/g,' ').trim();
+    if(t.dataset.f==='title')S.title=v;
+    else if(t.dataset.f==='subtitle')S.subtitle=v;
+    else if(t.dataset.f==='goal')S.boards[t.dataset.b].goal=v;
+    else if(t.dataset.f==='kr')S.boards[t.dataset.b].krs[+t.dataset.i].t=v;
+    commit();
+  }else if(t.dataset.m){
+    const B=S.boards[t.dataset.b];B[t.dataset.m]=t.dataset.m==='unit'?t.value.trim():(parseFloat(t.value)||0);commit();
+  }else if(t.dataset.rv){
+    S.reviews[t.dataset.rv]=t.value;save();
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.isContentEditable){e.preventDefault();e.target.blur()}});
+document.addEventListener('focusout',e=>{if(e.target.isContentEditable||e.target.dataset?.m)setTimeout(render,0)});
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const act=el.dataset.act,id=el.dataset.id;
+  if(act==='kr'){const k=S.boards[el.dataset.b].krs[+el.dataset.i];
+    if(!k.t&&!k.done){toast('先写下这个关键结果，再勾选');return}
+    k.done=!k.done;k.at=k.done?todayS():null;commit();
+    if(k.done)toast(bpct(el.dataset.b)===100?`${BM[el.dataset.b].name}板块全部达成！`:'已记入人生里程碑');}
+  else if(act==='chip'){ckBoard=el.dataset.b;try{localStorage.setItem(KEY+'.lastBoard',ckBoard)}catch(_){}renderChips()}
+  else if(act==='edit'){editId=id;delId=null;renderList()}
+  else if(act==='e-cancel'){editId=null;renderList()}
+  else if(act==='e-save'){const c=S.checkins.find(x=>x.id===id);const d=$('#e-date').value,tx=$('#e-text').value.trim();
+    if(!d||!tx){toast('日期和内容都要填');return}
+    Object.assign(c,{date:d,board:$('#e-board').value,text:tx,star:$('#e-star').checked});editId=null;commit();toast('已保存')}
+  else if(act==='del'){if(delId===id){S.checkins=S.checkins.filter(x=>x.id!==id);delId=null;commit();toast('已删除')}else{delId=id;renderList();setTimeout(()=>{if(delId===id){delId=null;renderList()}},3000)}}
+  else if(act==='more'){showAll=!showAll;renderList()}
+  else if(act==='focus'){document.body.classList.toggle('focus');const on=document.body.classList.contains('focus');$('#focusLbl').textContent=on?'退出截图模式':'截图模式';window.scrollTo(0,0)}
+  else if(act==='clear-sample'){S=blank();commit();toast('已清空，开始你的一年');}
+  else if(act==='reset'){if(el.dataset.armed){S=blank();delete el.dataset.armed;el.textContent='清空全部数据';commit();toast('数据已清空')}else{el.dataset.armed=1;el.textContent='再点一次确认清空';setTimeout(()=>{delete el.dataset.armed;el.textContent='清空全部数据'},3500)}}
+  else if(act==='export')doExport();
+  else if(act==='copy-tpl')copy(TPL,'模板已复制');
+  else if(act==='parse-paste'){const v=$('#paste').value.trim();if(!v){$('#impMsg').textContent='先粘贴一些内容';return}ingest([{name:'粘贴内容',text:v}])}
+  else if(act==='apply')applyPending();
+  else if(act==='cancel-imp'){pending=null;$('#preview').innerHTML=''}
+});
+
+$('#ckStar').addEventListener('click',()=>{ckStar=!ckStar;renderChips()});
+$('#ckForm').addEventListener('submit',e=>{
+  e.preventDefault();const tx=$('#ckText').value.trim();
+  if(!tx){$('#ckText').focus();toast('写一句今天做了什么');return}
+  if(S.sample){S=blank();toast('已清空示例，这是你的第一条打卡')}
+  S.checkins.push({id:uid(),date:$('#ckDate').value||todayS(),board:ckBoard,text:tx,star:ckStar});
+  $('#ckText').value='';ckStar=false;commit();
+  const n=S.checkins.length;if(MARKS.includes(n)||n===S.target)toast(`第 ${n} 次打卡，已写进人生里程碑`);else if(!S.sample)toast(`打卡成功 · ${n}/${S.target}`);
+});
+
+/* ---------- import ---------- */
+const TPL=`# 这一年，全力以赴
+副标题: 工作翻倍 · 读书破万 · 身体在线 · 认真去爱
+开始: 2026-10-01
+结束: 2027-10-01
+打卡目标: 300
+
+## 工作
+目标: 年度营收贡献 50 万
+指标: 12/50 万
+- [x] Q4 独立负责 1 个完整项目
+- [ ] 拿下 3 个长期客户
+- [ ] 年底前完成晋升答辩
+
+## 学习
+目标: 一年读完 24 本书
+指标: 5/24 本
+- [ ] 每月读 2 本并写书评
+- [ ] 考下 1 张专业证书
+- [ ] 学完一门系统课程
+
+## 健身
+目标: 全年跑量 1000 km
+指标: 86/1000 km
+- [ ] 每周训练 4 次，连续 12 周
+- [ ] 完成一次半程马拉松
+- [ ] 体脂率降到 15%
+
+## 恋爱
+目标: 认真约会 50 次
+指标: 6/50 次
+- [ ] 每月一次不看手机的约会
+- [ ] 一起旅行 2 次
+- [ ] 见彼此最好的朋友
+
+## 打卡
+2026-10-01 健身 晨跑 5km
+2026-10-02 学习 读完《原则》第 2 部分
+2026-10-03 恋爱 第一次一起做饭 ★
+
+## 复盘 2026-10
+这个月最大的收获是……`;
+$('#tpl').textContent=TPL;
+
+function parseText(txt){
+  const p={boards:{},checkins:[],reviews:{}};let cur=null,mode=null,rk=null,m;
+  const PB=k=>p.boards[k]=p.boards[k]||{krs:[]};
+  const CK=/^[-*+]?\s*(\d{4}\s*[-/.年]\s*\d{1,2}\s*[-/.月]\s*\d{1,2}\s*日?)\s*[|｜,，]?\s*[【\[(（]?([^\s\]】)）|｜,，:：]+)[】\])）]?\s*[|｜,，:：]?\s*(.+)$/;
+  txt.replace(/\r/g,'').split('\n').forEach(raw=>{
+    const line=raw.trim();if(!line)return;
+    if((m=line.match(/^#{1,6}\s*(.+)$/))){const h=m[1].trim();let m2;
+      const b=boardOf(h);
+      if(b){cur=b;mode='board';PB(b);return}
+      if((m2=h.match(/复盘.*?(\d{4})\s*[-/.年]\s*(\d{1,2})/))){mode='review';cur=null;rk=`${m2[1]}-${pad(+m2[2])}`;return}
+      if(/打卡|日志|记录|日记/.test(h)){mode='log';cur=null;return}
+      if(!p.title&&!mode&&line.startsWith('# ')){p.title=h;return}
+      mode=null;cur=null;return}
+    if((m=line.match(/^(标题|主标题|title)\s*[:：]\s*(.+)$/i))){p.title=m[2].trim();return}
+    if((m=line.match(/^(副标题|口号|slogan|subtitle)\s*[:：]\s*(.+)$/i))){p.subtitle=m[2].trim();return}
+    if((m=line.match(/^(开始|起始|开始日期|start)\s*[:：]\s*(.+)$/i))&&normD(m[2])){p.start=normD(m[2]);return}
+    if((m=line.match(/^(结束|截止|结束日期|end)\s*[:：]\s*(.+)$/i))&&normD(m[2])){p.end=normD(m[2]);return}
+    if((m=line.match(/^(打卡目标|目标打卡|打卡总数|年度打卡)\s*[:：]\s*(\d+)/))){p.target=+m[2];return}
+    if(mode==='review'){p.reviews[rk]=(p.reviews[rk]?p.reviews[rk]+'\n':'')+line;return}
+    if((m=line.match(CK))){const b=boardOf(m[2]);if(b){let t=m[3].trim();const star=/[★⭐]/.test(t);t=t.replace(/\s*[★⭐]\s*/g,' ').trim();p.checkins.push({date:normD(m[1]),board:b,text:t,star});return}}
+    if(cur){const B=PB(cur);
+      if((m=line.match(/^(年度目标|目标|goal)\s*[:：]\s*(.+)$/i))){B.goal=m[2].trim();return}
+      if((m=line.match(/^(指标|进度|当前|metric)\s*[:：]\s*([\d.]+)\s*[/／]\s*([\d.]+)\s*(.*)$/i))){B.cur=+m[2];B.tgt=+m[3];B.unit=m[4].trim();return}
+      if((m=line.match(/^[-*+]?\s*\[\s*([xX√✓✔]?)\s*\]\s*(.+)$/))){B.krs.push({t:m[2].trim(),done:!!m[1]});return}
+      if((m=line.match(/^(?:KR\s*\d*|关键结果\s*\d*|\d+\s*[.、)）])\s*[:：]?\s*(.+)$/i))){const d=/[（(]?(已完成|已达成|完成|✅)[)）]?\s*$/.test(m[1]);B.krs.push({t:m[1].replace(/[（(]?(已完成|已达成|完成|✅)[)）]?\s*$/,'').trim(),done:d});return}
+      if((m=line.match(/^[-*+]\s+(.+)$/))){B.krs.push({t:m[1].trim(),done:false});return}
+    }
+  });
+  return p;
+}
+function parseJSON(o){
+  const p={boards:{},checkins:[],reviews:{}};
+  ['title','subtitle'].forEach(k=>{if(typeof o[k]==='string')p[k]=o[k]});
+  if(o.start&&normD(o.start))p.start=normD(o.start);if(o.end&&normD(o.end))p.end=normD(o.end);
+  if(+o.target)p.target=+o.target;
+  const bl=o.boards?(Array.isArray(o.boards)?o.boards.map(x=>[x.id||x.name,x]):Object.entries(o.boards)):[];
+  bl.forEach(([k,x])=>{const b=boardOf(k)||boardOf(x&&x.name);if(!b||!x)return;
+    const B={krs:[]};if(x.goal)B.goal=String(x.goal);
+    const mt=x.metric||x;if(mt.tgt!=null||mt.target!=null){B.cur=+(mt.cur??mt.current??0);B.tgt=+(mt.tgt??mt.target);B.unit=mt.unit||''}
+    (x.krs||x.keyResults||x.kr||[]).forEach(k=>{if(typeof k==='string')B.krs.push({t:k,done:false});else if(k)B.krs.push({t:String(k.t||k.text||k.title||''),done:!!k.done,at:k.at||null})});
+    B.krs=B.krs.filter(k=>k.t);p.boards[b]=B});
+  (o.checkins||[]).forEach(c=>{const b=boardOf(c.board);const d=normD(c.date);if(b&&d&&c.text)p.checkins.push({date:d,board:b,text:String(c.text),star:!!c.star})});
+  if(o.reviews&&typeof o.reviews==='object')for(const k in o.reviews)if(o.reviews[k])p.reviews[k]=String(o.reviews[k]);
+  return p;
+}
+function merge(base,p){
+  const N=clone(base),log=[];
+  if(N.sample){const b=blank();Object.assign(N,b);log.push('替换示例数据')}
+  if(p.title&&p.title!==N.title){N.title=p.title;log.push(`大标题 → ${p.title}`)}
+  if(p.subtitle&&p.subtitle!==N.subtitle){N.subtitle=p.subtitle;log.push(`副标题 → ${p.subtitle}`)}
+  if(p.start&&p.start!==N.start){N.start=p.start;if(!p.end){const e=parseD(p.start);e.setFullYear(e.getFullYear()+1);N.end=ymd(e)}log.push(`开始日期 → ${dotD(p.start)}`)}
+  if(p.end&&p.end!==N.end){N.end=p.end;log.push(`结束日期 → ${dotD(p.end)}`)}
+  if(p.target&&p.target!==N.target){N.target=p.target;log.push(`打卡目标 → ${p.target}`)}
+  for(const k in p.boards){const I=p.boards[k],B=N.boards[k],nm=BM[k].name;
+    if(I.goal&&I.goal!==B.goal){B.goal=I.goal;log.push(`${nm}目标 → ${I.goal}`)}
+    if(I.tgt!=null&&(I.cur!==B.cur||I.tgt!==B.tgt||(I.unit&&I.unit!==B.unit))){B.cur=I.cur;B.tgt=I.tgt;if(I.unit)B.unit=I.unit;log.push(`${nm}指标 → ${fmt(I.cur)}/${fmt(I.tgt)} ${B.unit}`)}
+    const inc=I.krs.filter(x=>x.t);if(!inc.length)continue;
+    const keep=x=>{const o=B.krs.find(y=>y.t===x.t);return {t:x.t,done:!!(x.done||(o&&o.done)),at:(o&&o.done&&o.at)||(x.done?(x.at||todayS()):null)}};
+    const before=B.krs.map(x=>x.t+'|'+x.done).join();
+    if(inc.length>=3){B.krs=inc.slice(0,3).map(keep)}
+    else inc.forEach(x=>{const o=B.krs.find(y=>y.t===x.t);
+      if(o){if(x.done&&!o.done){o.done=true;o.at=todayS()}return}
+      let i=B.krs.findIndex(y=>!y.t);if(i<0)for(let j=2;j>=0;j--)if(!B.krs[j].done){i=j;break}
+      if(i<0){log.push(`${nm}已有 3 个达成的 KR，未替换「${x.t}」`);return}
+      B.krs[i]=keep(x)});
+    B.krs.forEach(x=>{if(x.done&&!before.includes(x.t+'|true'))log.push(`${nm} KR 达成：${x.t}`)});
+    if(B.krs.map(x=>x.t+'|'+x.done).join()!==before&&!log.some(l=>l.startsWith(nm+' KR')))log.push(`${nm}关键结果已更新`);
+  }
+  const seen=new Set(N.checkins.map(c=>c.date+'|'+c.board+'|'+c.text));let add=0,dup=0;
+  p.checkins.forEach(c=>{const key=c.date+'|'+c.board+'|'+c.text;if(seen.has(key)){dup++;const o=N.checkins.find(x=>x.date+'|'+x.board+'|'+x.text===key);if(c.star&&o&&!o.star)o.star=true;return}seen.add(key);N.checkins.push({id:uid(),...c});add++});
+  if(add)log.push(`新增打卡 ${add} 条${dup?`（跳过重复 ${dup} 条）`:''}`);else if(dup)log.push(`打卡 ${dup} 条已存在，跳过`);
+  for(const k in p.reviews){const v=p.reviews[k].trim();const o=(N.reviews[k]||'').trim();if(v&&!o.includes(v)){N.reviews[k]=o?o+'\n'+v:v;log.push(`${k} 月复盘笔记已追加`)}}
+  return {N,log,changed:log.length>0};
+}
+let pending=null;
+async function readFile(f){
+  if(/\.docx$/i.test(f.name)){
+    if(!window.mammoth)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js';s.onload=ok;s.onerror=()=>no(new Error('Word 解析库加载失败，请联网后重试，或另存为 .txt'));document.head.appendChild(s)});
+    const r=await window.mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()});return r.value;
+  }
+  return await f.text();
+}
+async function ingest(items){
+  $('#impMsg').textContent='解析中…';
+  let base=S,allLog=[],errs=[];
+  for(const it of items){
+    try{
+      let text=it.text;if(it.file)text=await readFile(it.file);
+      let p;const tt=text.trim();
+      if(/^[{\[]/.test(tt)){try{p=parseJSON(JSON.parse(tt))}catch(e){p=parseText(text)}}else p=parseText(text);
+      const r=merge(base,p);base=r.N;
+      if(r.changed)allLog.push(...r.log.map(l=>`${items.length>1?'['+it.name+'] ':''}${l}`));else errs.push(`${it.name}：没有识别到可导入的内容`);
+    }catch(e){errs.push(`${it.name}：${e.message}`)}
+  }
+  $('#impMsg').textContent='';
+  pending=allLog.length?base:null;
+  $('#preview').innerHTML=`<div class="preview ${allLog.length?'':'bad'}">
+    <strong>${allLog.length?`识别到 ${allLog.length} 项更新`:'没有可导入的内容'}</strong>
+    ${allLog.length?`<ul>${allLog.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>`:''}
+    ${errs.length?`<div class="muted">${errs.map(esc).join('<br>')}${allLog.length?'':'<br>请对照右侧格式整理，或把原始材料发给 Claude 转成这个格式。'}</div>`:''}
+    <div class="row">${allLog.length?'<button class="btn primary sm" data-act="apply">应用更新</button>':''}<button class="btn sm" data-act="cancel-imp">${allLog.length?'取消':'关闭'}</button></div></div>`;
+}
+function applyPending(){if(!pending)return;S=fix(pending);pending=null;$('#preview').innerHTML='';$('#paste').value='';editId=null;commit();toast('已更新');document.getElementById('board').scrollIntoView({behavior:'smooth'})}
+$('#file').addEventListener('change',e=>{const fs=[...e.target.files];if(fs.length)ingest(fs.map(f=>({name:f.name,file:f})));e.target.value=''});
+const drop=$('#drop');
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('on')}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('on')}));
+drop.addEventListener('drop',e=>{const fs=[...(e.dataTransfer?.files||[])];if(fs.length)ingest(fs.map(f=>({name:f.name,file:f})))});
+
+function copy(text,msg){
+  const done=()=>toast(msg);
+  try{navigator.clipboard.writeText(text).then(done,()=>fallback())}catch(e){fallback()}
+  function fallback(){const b=$('#exportBox');b.hidden=false;b.value=text;b.select();toast('已选中文本，请手动复制')}
+}
+function doExport(){
+  const data=JSON.stringify(S,null,2),name=`yearline-${todayS()}.json`;
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove()}catch(e){}
+  const b=$('#exportBox');b.hidden=false;b.value=data;
+  try{navigator.clipboard.writeText(data).then(()=>toast('备份已复制，也可以直接保存下载的文件'),()=>toast('备份内容在下方文本框里'))}catch(e){toast('备份内容在下方文本框里')}
+}
+
+/* ---------- boot ---------- */
+$('#ckDate').value=todayS();
+render();
+setInterval(tick,1000);
+let lastDay=todayS();setInterval(()=>{if(todayS()!==lastDay){lastDay=todayS();$('#ckDate').value=lastDay;render()}},60000);
+})();
+</script>
+</body>
+</html>
