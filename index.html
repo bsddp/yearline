@@ -12,7 +12,7 @@
   color-scheme:dark;
   --bg:#0D0B10; --panel:#15121A; --panel2:#1D1923; --line:#2C2733; --ink:#F4EFE9; --mute:#948C9C; --dim:#4B4553; --void:#211D27;
   --work:#4C8DFF; --study:#F5B83D; --fit:#FF5B45; --love:#FF7AC6;
-  --good:#5BD69A; --warn:#F5B83D; --bad:#FF5B45;
+  --life:#A79FB2; --good:#5BD69A; --warn:#F5B83D; --bad:#FF5B45;
   --disp:"Anton","Noto Sans SC",Impact,"Arial Narrow",sans-serif;
   --sans:"Noto Sans SC",-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -20,6 +20,7 @@
 html,body{background:var(--bg);color:var(--ink)}
 body{margin:0;font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
@@ -94,6 +95,15 @@ button{cursor:pointer}
 .grid-y i.fut{background:#18151C}
 .grid-y i.pad{background:transparent}
 .grid-y i.today{box-shadow:0 0 0 1.5px var(--ink)}
+.today-h{display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,3vw,36px);align-items:center;border-top:1px solid var(--line);padding-top:18px}
+.tdn{font-family:var(--disp);font-size:clamp(56px,10vw,96px);line-height:.85;font-variant-numeric:tabular-nums}
+.tdn small{font-size:.38em;color:var(--mute)}
+.tdside{display:grid;gap:10px;min-width:0}
+.tdchips{display:flex;flex-wrap:wrap;gap:6px}
+.tdc{font-size:13px;padding:3px 11px;border-radius:999px;border:1px solid var(--c);display:inline-flex;gap:6px;align-items:center;line-height:1.5}
+.tdc::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c)}
+.tdc.done{background:var(--c);color:#0D0B10;font-weight:700}
+.tdc.done::before{content:"✓";width:auto;height:auto;background:none}
 .stamp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
 
 /* focus mode for screenshot */
@@ -158,6 +168,28 @@ input[type=date].inp{width:auto}
 .edit select{background:var(--void);border:1px solid var(--line);border-radius:10px;padding:9px}
 .empty{color:var(--mute);padding:28px;text-align:center;border:1px dashed var(--line);border-radius:14px}
 
+/* daily plan */
+.plan{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:clamp(14px,3vw,22px);display:grid;gap:16px}
+.daynav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.daynav .dl{font-weight:900;font-size:18px;padding-inline:6px;display:flex;gap:8px;align-items:center}
+.today-b{font-size:11px;font-weight:700;background:var(--ink);color:var(--bg);border-radius:999px;padding:1px 8px}
+.phead{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pnum{font-family:var(--disp);font-size:clamp(52px,9vw,72px);line-height:.85;font-variant-numeric:tabular-nums}
+.pnum small{font-size:.4em;color:var(--mute)}
+.psegs{display:flex;gap:4px;flex:1;min-width:140px}
+.psegs i{flex:1;height:12px;border-radius:3px;background:var(--void);transition:background .3s}
+.pitems{display:grid;gap:6px}
+.pi{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:10px;align-items:center;padding:9px 10px;border-radius:12px;background:var(--panel2)}
+.pi .idx{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.pi.done .cb svg{opacity:1}
+.pi.done .pt{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--dim)}
+.pt{font-size:16px;padding:2px 4px;min-width:0;word-break:break-word}
+.ptag{border:1px solid var(--c);color:var(--c);background:transparent;border-radius:999px;font-size:12px;font-weight:700;padding:2px 10px;white-space:nowrap}
+.px{background:transparent;border:0;color:var(--dim);font-size:20px;line-height:1;padding:2px 6px;border-radius:6px}
+.px:hover{color:var(--bad)}
+.padd{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.padd textarea{min-height:48px;resize:vertical;line-height:1.5}
+
 /* milestones */
 .tl{position:relative;display:grid;gap:4px;padding-left:28px}
 .tl::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line)}
@@ -217,6 +249,9 @@ input[type=date].inp{width:auto}
   .stats{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:520px){
+  .today-h{grid-template-columns:1fr}
+  .pi{gap:8px;padding:9px 8px;grid-template-columns:auto 1fr auto auto}
+  .pi .idx{display:none}
   .frow{grid-template-columns:1fr auto auto}
   .frow input[type=date]{grid-column:1/-1;width:100%}
   .edit{grid-template-columns:1fr 1fr}
@@ -230,7 +265,7 @@ input[type=date].inp{width:auto}
 <body>
 <div class="wrap">
   <nav class="nav" aria-label="页面导航">
-    <a href="#board">看板</a><a href="#lines">主线</a><a href="#checkin">打卡</a><a href="#milestones">里程碑</a><a href="#review">月度复盘</a><a href="#import">资料</a>
+    <a href="#board">看板</a><a href="#today">今日计划</a><a href="#lines">主线</a><a href="#checkin">打卡</a><a href="#milestones">里程碑</a><a href="#review">月度复盘</a><a href="#import">资料</a>
   </nav>
   <div id="sampleBanner" class="banner" hidden>
     <span>现在显示的是<b>示例数据</b>，用来演示效果。上传你的资料后会自动替换。</span>
@@ -244,6 +279,11 @@ input[type=date].inp{width:auto}
   </div>
 
   <div class="hero" id="board"></div>
+
+  <section id="today">
+    <div class="sh"><div><div class="eyebrow">Daily plan</div><h2>今日计划</h2><p>每天的待办清单。勾掉一项，如果它属于工作、学习、健身、恋爱，会自动记一条打卡；点右侧标签可以换板块，文字可以直接改。</p></div></div>
+    <div class="plan" id="planBox"></div>
+  </section>
 
   <section id="lines">
     <div class="sh"><div><div class="eyebrow">Main lines · 4 boards</div><h2>一年主线</h2><p>每个板块一个量化年度目标、三个关键结果。只有勾选关键结果才推进度条。文字都可以直接点击修改。</p></div></div>
@@ -295,7 +335,7 @@ input[type=date].inp{width:auto}
       <div class="box">
         <div class="row" style="justify-content:space-between"><span class="eyebrow">资料格式 · 照着写就能识别</span><button class="btn sm" data-act="copy-tpl">复制模板</button></div>
         <pre id="tpl"></pre>
-        <p class="muted" style="margin:0">规则：<code>## 板块名</code> 下写目标、指标和关键结果；<code>[x]</code> 表示已达成；打卡行写成「日期 板块 内容」，末尾加 ★ 记为高光。写得随意的材料也可以先发给 Claude，让它整理成这个格式再上传。</p>
+        <p class="muted" style="margin:0">规则：<code>## 今日计划</code> 下每行一项，末尾写 <code>#健身</code> 可指定板块；<code>## 板块名</code> 下写目标、指标和关键结果；<code>[x]</code> 表示已达成；打卡行写成「日期 板块 内容」，末尾加 ★ 记为高光。写得随意的材料也可以先发给 Claude，让它整理成这个格式再上传。</p>
       </div>
     </div>
   </section>
@@ -342,7 +382,7 @@ function blank(y){
   y=y||new Date().getFullYear();
   return {v:2,title:`${y}，全力以赴`,subtitle:'',year:y,start:`${y}-01-01`,end:`${y}-12-31`,created:todayS(),target:300,history:{},
     boards:Object.fromEntries(BOARDS.map(b=>[b.id,{goal:'',cur:0,tgt:0,unit:'',krs:[0,1,2].map(()=>({t:'',done:false,at:null}))}])),
-    checkins:[],reviews:{},sample:false};
+    checkins:[],reviews:{},plans:{},planU:{},sample:false};
 }
 function sample(){
   const S=blank(),t=new Date();
@@ -359,12 +399,38 @@ function sample(){
   for(let i=39;i>=0;i--){ if(rnd()<.22) continue; const n=rnd()<.35?2:1;
     for(let j=0;j<n;j++){if(addDays(t,-i).getFullYear()!==S.year)break;const b=BOARDS[Math.floor(rnd()*4)].id;const arr=txt[b];S.checkins.push({id:uid(),date:ymd(addDays(t,-i)),board:b,text:arr[Math.floor(rnd()*arr.length)],star:false});}}
   const lr=S.checkins.filter(c=>c.board==='fit').pop(); if(lr){lr.text='第一次跑进 25 分钟 5km';lr.star=true;}
+  const td=ymd(t);S.plans[td]=[['晨跑 5km','fit',true],['调研竞品报价','work',true],['读《原则》30 页','study',false],['西语 App 打卡','study',false],['买菜：鸡腿 + 西兰花','life',true],['和 TA 视频 20 分钟','love',false]].map(([x,tag,done])=>({id:uid(),t:x,tag,done}));
+  reconcile(td,S);
   return S;
 }
 function load(){try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);if(s&&s.boards)return fix(s);}}catch(e){}return sample()}
-function fix(s){const b=blank(+s.year||new Date().getFullYear());if(!s.year&&s.start&&!s.created)s.created=s.start;s=Object.assign(b,s);s.year=+s.year;s.start=`${s.year}-01-01`;s.end=`${s.year}-12-31`;s.history=s.history||{};BOARDS.forEach(x=>{s.boards[x.id]=Object.assign(blank().boards[x.id],s.boards[x.id]||{});const k=s.boards[x.id].krs;while(k.length<3)k.push({t:'',done:false,at:null});k.length=3;});s.checkins=(s.checkins||[]).filter(c=>c&&c.date&&BM[c.board]);s.reviews=s.reviews||{};return s}
+function fix(s){const b=blank(+s.year||new Date().getFullYear());if(!s.year&&s.start&&!s.created)s.created=s.start;s=Object.assign(b,s);s.year=+s.year;s.start=`${s.year}-01-01`;s.end=`${s.year}-12-31`;s.history=s.history||{};BOARDS.forEach(x=>{s.boards[x.id]=Object.assign(blank().boards[x.id],s.boards[x.id]||{});const k=s.boards[x.id].krs;while(k.length<3)k.push({t:'',done:false,at:null});k.length=3;});s.checkins=(s.checkins||[]).filter(c=>c&&c.date&&BM[c.board]);s.reviews=s.reviews||{};s.plans=s.plans||{};s.planU=s.planU||{};return s}
 let S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- daily plan core ---------- */
+const TAGS=[...BOARDS,{id:'life',name:'日常',en:'LIFE',c:'var(--life)'}];
+const TM=Object.fromEntries(TAGS.map(t=>[t.id,t]));
+const KW={life:['买','菜','做饭','打扫','洗','快递','缴费','取件','超市','家务','收拾','体检','看病','理发'],
+  fit:['锻炼','健身','跑','运动','瑜伽','游泳','力量','拉伸','动作','训练','骑行','徒步','体态','康复','跟练','普拉提','撸铁'],
+  love:['约会','对象','男朋友','女朋友','伴侣','恋爱','陪'],
+  study:['论文','课','学习','读','书','西语','英语','日语','韩语','法语','单词','背','复习','考试','雅思','托福','网课'],
+  work:['调研','发票','报销','会议','开会','客户','方案','项目','汇报','邮件','合同','周报','工作','招生','咨询','文案','剪辑','视频','拍摄','运营','发布','对接','上班']};
+function guessTag(t){for(const k of ['life','fit','love','study','work'])if(KW[k].some(w=>t.includes(w)))return k;return 'life'}
+function tagOf(s){s=String(s||'').trim();return boardOf(s)||(/^(日常|生活|life|其他|杂事)/i.test(s)?'life':null)}
+function splitPlan(txt){
+  return String(txt).replace(/\r/g,'').split('\n').map(l=>l.trim()).filter(Boolean)
+    .filter(l=>!/^(今日计划|今天计划|明日计划|明天计划|今日|计划|待办|todo)\s*[:：]?$/i.test(l))
+    .map(l=>{let done=/^[-*•+]?\s*\[\s*[xX√✓✔]\s*\]/.test(l)||/[（(]?(已完成|✅)[)）]?$/.test(l);
+      let t=l.replace(/^[-*•+]?\s*(\[\s*[xX√✓✔]?\s*\]\s*)?(\d+\s*[.、)）．]\s*)?/,'').replace(/\s*[（(]?(已完成|✅)[)）]?$/,'').trim();
+      let tag=null;const m=t.match(/\s*[#＃]\s*(\S+)$/);if(m){tag=tagOf(m[1]);if(tag)t=t.slice(0,m.index).trim()}
+      return t?{t,done,tag:tag||guessTag(t)}:null}).filter(Boolean);
+}
+function reconcile(d,st){st=st||S;const items=st.plans[d]||[],want=new Set();
+  items.forEach(it=>{if(!(it.done&&BM[it.tag]))return;want.add(it.id);const c=st.checkins.find(x=>x.plan===it.id);
+    if(c)Object.assign(c,{date:d,board:it.tag,text:it.t});else st.checkins.push({id:uid(),date:d,board:it.tag,text:it.t,star:false,plan:it.id})});
+  st.checkins=st.checkins.filter(c=>!(c.plan&&c.date===d&&!want.has(c.plan)));
+}
 
 /* ---------- derived ---------- */
 const bpct=id=>Math.round(S.boards[id].krs.filter(k=>k.done).length/3*100);
@@ -436,6 +502,7 @@ function renderHero(){
         <div class="kr-n">KR ${dn}/3${B.tgt?` · ${fmt(B.cur)}/${fmt(B.tgt)} ${esc(B.unit)}`:''}</div>
       </div>`}).join('')}
     </div>
+    ${heroToday()}
     <div class="ck">
       <div class="ckn">${n}<small>/${S.target}</small></div>
       <div class="ckside">
@@ -448,12 +515,39 @@ function renderHero(){
   </div>`;
   tick();
 }
+function heroToday(){const d=todayS(),items=S.plans[d]||[],dn=items.filter(x=>x.done).length,wk='日一二三四五六';
+  return `<div class="today-h">
+    <div><div class="eyebrow" style="margin-bottom:6px">今日 ${dotD(d).slice(5)} 周${wk[new Date().getDay()]}</div><div class="tdn">${dn}<small>/${items.length}</small></div></div>
+    <div class="tdside">${items.length?`<div class="tdchips">${items.map(x=>`<span class="tdc ${x.done?'done':''}" style="--c:${TM[x.tag].c}">${esc(x.t)}</span>`).join('')}</div>`:'<div class="muted">今天还没有计划，在下面「今日计划」里写几项</div>'}</div>
+  </div>`}
 const fmt=v=>{v=+v||0;return Number.isInteger(v)?String(v):v.toFixed(1)};
 function tick(){
   const en=endEx();if(!$('#dleft'))return;
   const ms=Math.max(0,en-new Date()),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);
   $('#dleft').textContent=d;$('#clock').innerHTML=`${pad(h)}:${pad(m)}:${pad(s)}<span>时 分 秒</span>`;
 }
+
+/* ---------- render: daily plan ---------- */
+let planDate=todayS();
+const planItem=id=>(S.plans[planDate]||[]).find(x=>x.id===id);
+function renderPlan(){
+  const d=planDate,items=S.plans[d]||[],n=items.length,dn=items.filter(x=>x.done).length,dt=parseD(d),wk='日一二三四五六',isT=d===todayS();
+  const prev=S.plans[ymd(addDays(dt,-1))]||[],carry=prev.filter(x=>!x.done&&!items.some(z=>z.t===x.t));
+  $('#planBox').innerHTML=`
+  <div class="daynav"><button class="btn sm" data-act="pday" data-n="-1">‹ 前一天</button><div class="dl">${dotD(d)} 周${wk[dt.getDay()]}${isT?'<span class="today-b">今天</span>':''}</div><button class="btn sm" data-act="pday" data-n="1">后一天 ›</button>${isT?'':'<button class="btn sm ghost" data-act="ptoday">回到今天</button>'}</div>
+  <div class="phead"><div class="pnum">${dn}<small>/${n}</small></div><div class="psegs">${n?items.map(x=>`<i style="${x.done?'background:'+TM[x.tag].c:''}"></i>`).join(''):'<i></i>'}</div><span class="muted">${n?(dn===n?'全部完成':`完成 ${Math.round(dn/n*100)}%，还剩 ${n-dn} 项`):'这一天还没有计划'}</span></div>
+  ${n?`<div class="pitems">${items.map((x,i)=>`
+    <div class="pi ${x.done?'done':''}">
+      <span class="idx">${pad(i+1)}</span>
+      <button class="cb" data-act="ptoggle" data-id="${x.id}" aria-pressed="${x.done}" aria-label="完成 ${esc(x.t)}" style="${x.done?`background:${TM[x.tag].c};border-color:${TM[x.tag].c}`:''}">${CHECK}</button>
+      <div class="pt" contenteditable="true" data-pe="${x.id}" spellcheck="false">${esc(x.t)}</div>
+      <button class="ptag" style="--c:${TM[x.tag].c}" data-act="ptag" data-id="${x.id}" title="点击切换板块">${TM[x.tag].name}</button>
+      <button class="px" data-act="pdel" data-id="${x.id}" aria-label="删除 ${esc(x.t)}">×</button>
+    </div>`).join('')}</div>`:''}
+  ${carry.length?`<div><button class="btn sm" data-act="pcarry">把前一天没完成的 ${carry.length} 项挪过来</button></div>`:''}
+  <div class="padd"><textarea class="inp" id="planIn" rows="2" placeholder="加一项，或一次粘贴整份清单（每行一项，编号会自动去掉）"></textarea><button class="btn primary" data-act="padd">添加</button></div>`;
+}
+function touchPlan(d){S.planU[d]=Date.now();reconcile(d);commit();pushPlan(d)}
 
 /* ---------- render: boards ---------- */
 const CHECK='<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke="#0D0B10" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -580,7 +674,7 @@ function renderReviews(){
 }
 
 /* ---------- render all ---------- */
-const PARTS=[['#board',renderHero],['#boards',renderBoards],['#ckList',renderList],['#msList',renderMs],['#rvList',renderReviews]];
+const PARTS=[['#board',renderHero],['#planBox',renderPlan],['#boards',renderBoards],['#ckList',renderList],['#msList',renderMs],['#rvList',renderReviews]];
 function render(){
   const a=document.activeElement;
   PARTS.forEach(([sel,fn])=>{const el=$(sel);if(a&&a!==document.body&&el.contains(a)&&(a.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(a.tagName)))return;fn()});
@@ -604,17 +698,30 @@ document.addEventListener('input',e=>{
     commit();
   }else if(t.dataset.m){
     const B=S.boards[t.dataset.b];B[t.dataset.m]=t.dataset.m==='unit'?t.value.trim():(parseFloat(t.value)||0);commit();
+  }else if(t.dataset.pe){
+    const it=planItem(t.dataset.pe);if(!it)return;it.t=t.innerText.replace(/\n+/g,' ').trim();S.planU[planDate]=Date.now();reconcile(planDate);save();pushPlan(planDate);
   }else if(t.dataset.rv){
     S.reviews[t.dataset.rv]=t.value;save();
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.isContentEditable){e.preventDefault();e.target.blur()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.isContentEditable){e.preventDefault();e.target.blur()}if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&e.target.id==='planIn'){e.preventDefault();document.querySelector('[data-act=padd]').click()}});
 document.addEventListener('focusout',e=>{if(e.target.isContentEditable||e.target.dataset?.m)setTimeout(render,0)});
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');if(!el)return;
   const act=el.dataset.act,id=el.dataset.id;
-  if(act==='kr'){const k=S.boards[el.dataset.b].krs[+el.dataset.i];
+  if(act==='ptoggle'){const it=planItem(id);if(!it)return;it.done=!it.done;touchPlan(planDate);
+    if(it.done)toast(BM[it.tag]?`完成 · ${BM[it.tag].name}打卡 +1`:'完成一项');}
+  else if(act==='ptag'){const it=planItem(id);if(!it)return;const ids=TAGS.map(t=>t.id);it.tag=ids[(ids.indexOf(it.tag)+1)%ids.length];touchPlan(planDate)}
+  else if(act==='pdel'){S.plans[planDate]=(S.plans[planDate]||[]).filter(x=>x.id!==id);touchPlan(planDate);toast('已删除')}
+  else if(act==='pday'){planDate=ymd(addDays(parseD(planDate),+el.dataset.n));renderPlan()}
+  else if(act==='ptoday'){planDate=todayS();renderPlan()}
+  else if(act==='pcarry'){const cur=S.plans[planDate]=S.plans[planDate]||[];(S.plans[ymd(addDays(parseD(planDate),-1))]||[]).filter(x=>!x.done&&!cur.some(z=>z.t===x.t)).forEach(x=>cur.push({id:uid(),t:x.t,tag:x.tag,done:false}));touchPlan(planDate);toast('已挪到这一天')}
+  else if(act==='padd'){const v=$('#planIn').value;const list=splitPlan(v);if(!list.length){$('#planIn').focus();toast('先写一项计划');return}
+    const wasSample=S.sample;if(S.sample)S=blank();
+    const cur=S.plans[planDate]=S.plans[planDate]||[];let a=0;list.forEach(x=>{if(cur.some(z=>z.t===x.t))return;cur.push({id:uid(),t:x.t,tag:x.tag,done:x.done});a++});
+    $('#planIn').value='';touchPlan(planDate);toast(wasSample?'已清空示例，开始你的计划':(a?`加了 ${a} 项`:'这些都已经在清单里了'))}
+  else if(act==='kr'){const k=S.boards[el.dataset.b].krs[+el.dataset.i];
     if(!k.t&&!k.done){toast('先写下这个关键结果，再勾选');return}
     k.done=!k.done;k.at=k.done?todayS():null;commit();
     if(k.done)toast(bpct(el.dataset.b)===100?`${BM[el.dataset.b].name}板块全部达成！`:'已记入人生里程碑');}
@@ -624,7 +731,7 @@ document.addEventListener('click',e=>{
   else if(act==='e-save'){const c=S.checkins.find(x=>x.id===id);const d=$('#e-date').value,tx=$('#e-text').value.trim();
     if(!d||!tx){toast('日期和内容都要填');return}
     Object.assign(c,{date:d,board:$('#e-board').value,text:tx,star:$('#e-star').checked});editId=null;commit();toast('已保存')}
-  else if(act==='del'){if(delId===id){S.checkins=S.checkins.filter(x=>x.id!==id);delId=null;commit();toast('已删除')}else{delId=id;renderList();setTimeout(()=>{if(delId===id){delId=null;renderList()}},3000)}}
+  else if(act==='del'){if(delId===id){const c=S.checkins.find(x=>x.id===id);S.checkins=S.checkins.filter(x=>x.id!==id);delId=null;if(c&&c.plan){for(const d in S.plans){const it=S.plans[d].find(x=>x.id===c.plan);if(it){it.done=false;S.planU[d]=Date.now();pushPlan(d)}}}commit();toast('已删除')}else{delId=id;renderList();setTimeout(()=>{if(delId===id){delId=null;renderList()}},3000)}}
   else if(act==='more'){showAll=!showAll;renderList()}
   else if(act==='focus'){document.body.classList.toggle('focus');const on=document.body.classList.contains('focus');$('#focusLbl').textContent=on?'退出截图模式':'截图模式';window.scrollTo(0,0)}
   else if(act==='new-year'){const ny=new Date().getFullYear();
@@ -690,12 +797,19 @@ const TPL=`# 这一年，全力以赴
 2026-10-02 学习 读完《原则》第 2 部分
 2026-10-03 恋爱 第一次一起做饭 ★
 
+## 今日计划 2026-10-01
+1. 调研竞品报价
+2. 晨跑 5km #健身
+3. [x] 买菜
+
 ## 复盘 2026-10
 这个月最大的收获是……`;
 $('#tpl').textContent=TPL;
 
 function parseText(txt){
-  const p={boards:{},checkins:[],reviews:{}};let cur=null,mode=null,rk=null,m;
+  const p={boards:{},checkins:[],reviews:{},plans:{}};let cur=null,mode=null,rk=null,pk=null,m;
+  const PLANH=/^(今日计划|今天计划|明日计划|明天计划|每日计划|计划|待办|todo)\s*(\d{4}\s*[-/.年]\s*\d{1,2}\s*[-/.月]\s*\d{1,2}\s*日?)?\s*[:：]?\s*$/i;
+  const planKey=(w,dd)=>normD(dd)||(/明/.test(w)?ymd(addDays(new Date(),1)):todayS());
   const PB=k=>p.boards[k]=p.boards[k]||{krs:[]};
   const CK=/^[-*+]?\s*(\d{4}\s*[-/.年]\s*\d{1,2}\s*[-/.月]\s*\d{1,2}\s*日?)\s*[|｜,，]?\s*[【\[(（]?([^\s\]】)）|｜,，:：]+)[】\])）]?\s*[|｜,，:：]?\s*(.+)$/;
   txt.replace(/\r/g,'').split('\n').forEach(raw=>{
@@ -703,6 +817,7 @@ function parseText(txt){
     if((m=line.match(/^#{1,6}\s*(.+)$/))){const h=m[1].trim();let m2;
       const b=boardOf(h);
       if(b){cur=b;mode='board';PB(b);return}
+      if((m2=h.match(PLANH))){mode='plan';cur=null;pk=planKey(m2[1],m2[2]);return}
       if((m2=h.match(/复盘.*?(\d{4})\s*[-/.年]\s*(\d{1,2})/))){mode='review';cur=null;rk=`${m2[1]}-${pad(+m2[2])}`;return}
       if(/打卡|日志|记录|日记/.test(h)){mode='log';cur=null;return}
       if(!p.title&&!mode&&line.startsWith('# ')){p.title=h;return}
@@ -712,6 +827,8 @@ function parseText(txt){
     if((m=line.match(/^(年份|年度|year)\s*[:：]\s*(\d{4})/i))){p.year=+m[2];return}
     if((m=line.match(/^(开始|起始|开始日期|start|结束|截止|结束日期|end)\s*[:：]\s*(\d{4})/i))){p.year=p.year||+m[2];return}
     if((m=line.match(/^(打卡目标|目标打卡|打卡总数|年度打卡)\s*[:：]\s*(\d+)/))){p.target=+m[2];return}
+    if((m=line.match(PLANH))){mode='plan';cur=null;pk=planKey(m[1],m[2]);return}
+    if(mode==='plan'){(p.plans[pk]=p.plans[pk]||[]).push(...splitPlan(line));return}
     if(mode==='review'){p.reviews[rk]=(p.reviews[rk]?p.reviews[rk]+'\n':'')+line;return}
     if((m=line.match(CK))){const b=boardOf(m[2]);if(b){let t=m[3].trim();const star=/[★⭐]/.test(t);t=t.replace(/\s*[★⭐]\s*/g,' ').trim();p.checkins.push({date:normD(m[1]),board:b,text:t,star});return}}
     if(cur){const B=PB(cur);
@@ -725,7 +842,7 @@ function parseText(txt){
   return p;
 }
 function parseJSON(o){
-  const p={boards:{},checkins:[],reviews:{}};
+  const p={boards:{},checkins:[],reviews:{},plans:{}};
   ['title','subtitle'].forEach(k=>{if(typeof o[k]==='string')p[k]=o[k]});
   if(+o.year)p.year=+o.year;else if(o.start&&normD(o.start))p.year=+normD(o.start).slice(0,4);
   if(+o.target)p.target=+o.target;
@@ -736,6 +853,7 @@ function parseJSON(o){
     (x.krs||x.keyResults||x.kr||[]).forEach(k=>{if(typeof k==='string')B.krs.push({t:k,done:false});else if(k)B.krs.push({t:String(k.t||k.text||k.title||''),done:!!k.done,at:k.at||null})});
     B.krs=B.krs.filter(k=>k.t);p.boards[b]=B});
   (o.checkins||[]).forEach(c=>{const b=boardOf(c.board);const d=normD(c.date);if(b&&d&&c.text)p.checkins.push({date:d,board:b,text:String(c.text),star:!!c.star})});
+  if(o.plans&&typeof o.plans==='object')for(const k in o.plans){const d=normD(k);if(d&&Array.isArray(o.plans[k]))p.plans[d]=o.plans[k].map(x=>typeof x==='string'?splitPlan(x)[0]:(x&&x.t?{t:String(x.t),done:!!x.done,tag:TM[x.tag]?x.tag:guessTag(String(x.t))}:null)).filter(Boolean)}
   if(o.reviews&&typeof o.reviews==='object')for(const k in o.reviews)if(o.reviews[k])p.reviews[k]=String(o.reviews[k]);
   return p;
 }
@@ -764,6 +882,9 @@ function merge(base,p){
   const seen=new Set(N.checkins.map(c=>c.date+'|'+c.board+'|'+c.text));let add=0,dup=0;
   p.checkins.forEach(c=>{const key=c.date+'|'+c.board+'|'+c.text;if(seen.has(key)){dup++;const o=N.checkins.find(x=>x.date+'|'+x.board+'|'+x.text===key);if(c.star&&o&&!o.star)o.star=true;return}seen.add(key);N.checkins.push({id:uid(),...c});add++});
   if(add)log.push(`新增打卡 ${add} 条${dup?`（跳过重复 ${dup} 条）`:''}`);else if(dup)log.push(`打卡 ${dup} 条已存在，跳过`);
+  for(const d in p.plans||{}){const cur=N.plans[d]=N.plans[d]||[];let a=0,dn=0;
+    p.plans[d].forEach(x=>{const o=cur.find(y=>y.t===x.t);if(o){if(x.done&&!o.done){o.done=true;dn++}}else{cur.push({id:uid(),t:x.t,tag:x.tag||guessTag(x.t),done:!!x.done});a++}});
+    if(a||dn){N.planU[d]=Date.now();reconcile(d,N);log.push(`${dotD(d)} 计划：新增 ${a} 项${dn?`，完成 ${dn} 项`:''}`)}}
   for(const k in p.reviews){const v=p.reviews[k].trim();const o=(N.reviews[k]||'').trim();if(v&&!o.includes(v)){N.reviews[k]=o?o+'\n'+v:v;log.push(`${k} 月复盘笔记已追加`)}}
   return {N,log,changed:log.length>0};
 }
@@ -795,7 +916,7 @@ async function ingest(items){
     ${errs.length?`<div class="muted">${errs.map(esc).join('<br>')}${allLog.length?'':'<br>请对照右侧格式整理，或把原始材料发给 Claude 转成这个格式。'}</div>`:''}
     <div class="row">${allLog.length?'<button class="btn primary sm" data-act="apply">应用更新</button>':''}<button class="btn sm" data-act="cancel-imp">${allLog.length?'取消':'关闭'}</button></div></div>`;
 }
-function applyPending(){if(!pending)return;S=fix(pending);pending=null;$('#preview').innerHTML='';$('#paste').value='';editId=null;commit();toast('已更新');document.getElementById('board').scrollIntoView({behavior:'smooth'})}
+function applyPending(){if(!pending)return;S=fix(pending);Object.keys(S.planU).forEach(pushPlan);pending=null;$('#preview').innerHTML='';$('#paste').value='';editId=null;commit();toast('已更新');document.getElementById('board').scrollIntoView({behavior:'smooth'})}
 $('#file').addEventListener('change',e=>{const fs=[...e.target.files];if(fs.length)ingest(fs.map(f=>({name:f.name,file:f})));e.target.value=''});
 const drop=$('#drop');
 ['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('on')}));
@@ -818,7 +939,28 @@ function doExport(){
 $('#ckDate').value=todayS();
 render();
 setInterval(tick,1000);
-let lastDay=todayS();setInterval(()=>{if(todayS()!==lastDay){lastDay=todayS();$('#ckDate').value=lastDay;render()}},60000);
+let lastDay=todayS();setInterval(()=>{if(todayS()!==lastDay){if(planDate===lastDay)planDate=todayS();lastDay=todayS();$('#ckDate').value=lastDay;render()}},60000);
+
+/* ---------- optional cloud sync of daily plans (only inside claude.ai; elsewhere stays local) ---------- */
+let pdb=null;const pushT={};
+function pushPlan(d){if(!pdb||S.sample)return;clearTimeout(pushT[d]);pushT[d]=setTimeout(async()=>{
+  try{await pdb.doc('plans/'+d).set({date:d,u:S.planU[d]||Date.now(),items:(S.plans[d]||[]).map(({id,t,tag,done})=>({id,t,tag,done}))})}catch(e){}},800)}
+(async()=>{try{
+  if(!window.claude||typeof window.claude.use!=='function')return;
+  pdb=await window.claude.use('db');if(!pdb)return;
+  let first=true;
+  pdb.collection('plans').onSnapshot(snap=>{
+    let changed=false;const remote=new Set();
+    snap.docs.forEach(doc=>{if(!doc.exists)return;const b=doc.data()||{};const d=normD(b.date||doc.id);if(!d)return;remote.add(d);
+      const ru=+b.u||0,lu=S.planU[d]||0;
+      if(ru>lu){if(S.sample)S=blank();
+        S.plans[d]=(Array.isArray(b.items)?b.items:[]).filter(x=>x&&x.t).map(x=>({id:String(x.id||uid()),t:String(x.t),tag:TM[x.tag]?x.tag:guessTag(String(x.t)),done:!!x.done}));
+        S.planU[d]=ru;reconcile(d);changed=true}
+      else if(lu>ru)pushPlan(d)});
+    if(first){first=false;Object.keys(S.planU).forEach(d=>{if(!remote.has(d))pushPlan(d)})}
+    if(changed)commit();
+  },()=>{pdb=null});
+}catch(e){pdb=null}})();
 })();
 </script>
 </body>
